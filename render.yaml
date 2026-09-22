@@ -1,14 +1,6 @@
 services:
   - type: web
     name: envloument
-    runtime: python
-    plan: free
+    env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
-    envVars:
-      - key: SESSION_SECRET
-        generateValue: true
-      - key: DEMO_HORAS
-        value: "24"
-      - key: ADMIN_PASSWORD
-        sync: false
