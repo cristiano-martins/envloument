@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login Demo | Envloument</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}">
+</head>
+<body>
+<main class="lg">
+  <section class="lg-art">
+    <div>
+      <h2>Vê a Envloument em ação, sem compromisso.</h2>
+      <p>Área exclusiva de demonstração com os nossos modelos de sites e o sistema de gestão de stock.</p>
+      <ul>
+        <li>Modelos de sites prontos a personalizar</li>
+        <li>Simulador de gestão de stock</li>
+        <li>Pedido de projeto em poucos cliques</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="lg-form">
+    <div class="lg-box">
+      <a class="brand" href="/"><img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="">Envloument</a>
+      <h1>Login Demo</h1>
+      <p class="sub">Introduz as credenciais temporárias que recebeste ao solicitar a demonstração.</p>
+
+      {% if aviso %}<div class="alert info">{{ aviso }}</div>{% endif %}
+      {% if erro %}<div class="alert err" role="alert">{{ erro }}</div>{% endif %}
+
+      <form method="post" action="{{ url_for('demo_login') }}" autocomplete="off">
+        <label class="fld"><span>Utilizador</span>
+          <input class="inp" name="usuario" value="{{ usuario }}" placeholder="ex.: demo_cliente01" autocapitalize="none" spellcheck="false" required {{ '' if usuario else 'autofocus' }}></label>
+        <label class="fld"><span>Palavra-passe temporária</span>
+          <input class="inp" type="password" name="senha" placeholder="ex.: ENV2026-K7M2P" required {{ 'autofocus' if usuario else '' }}></label>
+        <button class="btn block" type="submit">Entrar na demonstração</button>
+      </form>
+
+      <p class="lg-foot">Ainda não tens credenciais? <a href="/#demo">Solicitar Demonstração</a></p>
+      <a class="lg-back" href="/">← Voltar ao site</a>
+    </div>
+  </section>
+</main>
+</body>
+</html>

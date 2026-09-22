@@ -1,0 +1,42 @@
+<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box;margin:0;padding:0}a{text-decoration:none;color:inherit}ul{list-style:none}html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#fafafa;color:#111;overflow-x:hidden}
+.strip{background:#111;color:#fff;text-align:center;font-size:.78rem;padding:9px;letter-spacing:.3px}
+header{display:flex;align-items:center;gap:30px;padding:18px 5%;background:#fff;border-bottom:1px solid #eee}
+.logo{font-weight:900;font-size:1.5rem;letter-spacing:-1px}.logo b{color:#f97316}
+.search{flex:1;max-width:520px;background:#f4f4f5;border-radius:99px;padding:12px 20px;color:#a1a1aa;font-size:.9rem}
+.ic{margin-left:auto;display:flex;gap:22px;font-size:1.2rem}.ic span{position:relative}.ic sup{position:absolute;top:-8px;right:-10px;background:#f97316;color:#fff;font-size:.6rem;border-radius:99px;padding:2px 6px;font-weight:700}
+.chips{display:flex;gap:10px;padding:16px 5%;background:#fff;overflow:auto}.chips span{white-space:nowrap;padding:8px 18px;border-radius:99px;background:#f4f4f5;font-size:.85rem;font-weight:600}.chips span:first-child{background:#111;color:#fff}
+.banner{margin:22px 5%;border-radius:26px;background:linear-gradient(120deg,#f97316,#ef4444 60%,#be123c);color:#fff;padding:54px 6%;display:flex;justify-content:space-between;align-items:center;overflow:hidden;position:relative}
+.banner small{letter-spacing:2px;font-weight:700;opacity:.9}.banner h1{font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;margin:10px 0 18px;letter-spacing:-1.5px;font-weight:900}
+.banner a{display:inline-block;background:#fff;color:#111;padding:13px 28px;border-radius:99px;font-weight:700;font-size:.92rem}
+.banner .big{font-size:10rem;filter:drop-shadow(0 20px 30px rgba(0,0,0,.3));transform:rotate(-12deg)}
+h2{padding:26px 5% 6px;font-size:1.5rem;letter-spacing:-.5px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:14px 5% 50px}
+.p{background:#fff;border-radius:18px;padding:12px;border:1px solid #eee;transition:.3s}.p:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(0,0,0,.09)}
+.p .im{aspect-ratio:1;border-radius:12px;display:grid;place-items:center;font-size:4.2rem;position:relative}
+.p .off{position:absolute;top:10px;left:10px;background:#111;color:#fff;font-size:.68rem;padding:4px 10px;border-radius:99px;font-weight:700}
+.p h3{font-size:.95rem;margin:12px 4px 3px}.p .r{font-size:.75rem;color:#f59e0b;margin:0 4px}
+.p .row{display:flex;justify-content:space-between;align-items:center;margin:8px 4px 4px}.p b{font-size:1.02rem}.p button{border:0;background:#111;color:#fff;border-radius:99px;padding:8px 14px;font-size:.78rem;font-weight:600}
+.news{margin:0 5% 50px;background:#111;color:#fff;border-radius:24px;padding:46px;text-align:center}.news h2{padding:0 0 8px;font-size:1.6rem}.news p{color:#a1a1aa;margin-bottom:20px}
+.news div{display:inline-flex;background:#27272a;border-radius:99px;padding:6px;gap:10px}.news span{padding:8px 22px;color:#a1a1aa;font-size:.9rem}.news a{background:#f97316;border-radius:99px;padding:10px 24px;font-weight:700;font-size:.9rem}
+footer{text-align:center;padding:26px;color:#71717a;font-size:.82rem;border-top:1px solid #eee}
+@media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.banner .big{display:none}.search{display:none}}
+</style></head><body>
+<div class="strip">🚚 Entrega grátis em compras acima de 50.000 Kz · Pagamento na entrega disponível</div>
+<header><a class="logo" href="#">Mercato<b>.</b></a><div class="search">🔍 Pesquisar produtos, marcas…</div><div class="ic"><span>♡</span><span>👤</span><span>🛒<sup>2</sup></span></div></header>
+<div class="chips"><span>Tudo</span><span>Calçado</span><span>Eletrónica</span><span>Acessórios</span><span>Casa</span><span>Moda</span><span>Promoções 🔥</span></div>
+<section class="banner"><div><small>COLEÇÃO 2026</small><h1>Estilo novo,<br>preços a -30%</h1><a href="#">Comprar agora →</a></div><div class="big">👟</div></section>
+<h2>Mais vendidos</h2>
+<section class="grid">
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#fed7aa,#fdba74)">👟<span class="off">-30%</span></div><h3>Sneakers Urban Air</h3><div class="r">★★★★★ (128)</div><div class="row"><b>45.000 Kz</b><button>+ Carrinho</button></div></div>
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#bfdbfe,#93c5fd)">🎧</div><h3>Headphones Pro X</h3><div class="r">★★★★☆ (86)</div><div class="row"><b>32.500 Kz</b><button>+ Carrinho</button></div></div>
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#ddd6fe,#c4b5fd)">⌚<span class="off">Novo</span></div><h3>Smartwatch Fit S2</h3><div class="r">★★★★★ (203)</div><div class="row"><b>89.900 Kz</b><button>+ Carrinho</button></div></div>
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#fecdd3,#fda4af)">👜</div><h3>Mala Couro Elegance</h3><div class="r">★★★★☆ (54)</div><div class="row"><b>27.000 Kz</b><button>+ Carrinho</button></div></div>
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#bbf7d0,#86efac)">📱<span class="off">-15%</span></div><h3>Smartphone Nova 12</h3><div class="r">★★★★★ (311)</div><div class="row"><b>210.000 Kz</b><button>+ Carrinho</button></div></div>
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#fef08a,#fde047)">🕶️</div><h3>Óculos Solar Riviera</h3><div class="r">★★★★☆ (77)</div><div class="row"><b>15.500 Kz</b><button>+ Carrinho</button></div></div>
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#a5f3fc,#67e8f9)">🎒</div><h3>Mochila Trek 30L</h3><div class="r">★★★★★ (92)</div><div class="row"><b>24.900 Kz</b><button>+ Carrinho</button></div></div>
+<div class="p"><div class="im" style="background:linear-gradient(135deg,#e5e7eb,#d1d5db)">💻</div><h3>Portátil Slim 14"</h3><div class="r">★★★★★ (65)</div><div class="row"><b>480.000 Kz</b><button>+ Carrinho</button></div></div>
+</section>
+<section class="news"><h2>Recebe 10% no primeiro pedido</h2><p>Subscreve e fica a par das novidades e promoções.</p><div><span>o-teu@email.com</span><a href="#">Subscrever</a></div></section>
+<footer>© 2026 Mercato · Loja Online · Luanda, Angola</footer>
+</body></html>

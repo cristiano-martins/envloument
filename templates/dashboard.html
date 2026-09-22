@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Área Demo | Envloument</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}">
+</head>
+<body>
+{% macro icon(n) -%}
+<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+{%- if n=='home' %}<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>
+{%- elif n=='layout' %}<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/>
+{%- elif n=='brief' %}<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18"/>
+{%- elif n=='box' %}<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/>
+{%- elif n=='send' %}<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+{%- elif n=='mail' %}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>
+{%- elif n=='phone' %}<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/>
+{%- elif n=='pin' %}<path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>
+{%- elif n=='out' %}<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>
+{%- elif n=='menu' %}<path d="M3 6h18M3 12h18M3 18h18"/>
+{%- elif n=='clock' %}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+{%- elif n=='in' %}<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/>
+{%- elif n=='outbox' %}<path d="M12 15V3m0 0l-4 4m4-4l4 4M4 19h16"/>
+{%- elif n=='list' %}<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>
+{%- elif n=='bell' %}<path d="M6 9a6 6 0 1112 0c0 6 2 7 2 7H4s2-1 2-7zM10 20a2 2 0 004 0"/>
+{%- elif n=='chart' %}<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>
+{%- elif n=='scan' %}<path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M7 12h10"/>
+{%- elif n=='shop' %}<path d="M4 9l1-5h14l1 5M4 9v11h16V9M4 9a3 3 0 006 0 3 3 0 006 0 3 3 0 004 0"/>
+{%- elif n=='pen' %}<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}
+
+<div class="app">
+  <aside class="side" id="side">
+    <a class="brand" href="/"><img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="">Envloument</a>
+    <small class="lbl">Área de demonstração</small>
+    <nav class="nav" aria-label="Menu">
+      <a href="#inicio" data-go="inicio" class="on">{{ icon('home') }} Início</a>
+      <a href="#modelos" data-go="modelos">{{ icon('layout') }} Modelos de Sites</a>
+      <a href="#servicos" data-go="servicos">{{ icon('brief') }} Serviços</a>
+      <a href="#stock" data-go="stock">{{ icon('box') }} Gestão de Stock</a>
+      <a href="#projeto" data-go="projeto">{{ icon('send') }} Solicitar Projeto</a>
+      <a href="#contacto" data-go="contacto">{{ icon('mail') }} Contacto</a>
+    </nav>
+    <div class="side-foot">
+      <div class="usr"><div class="av">{{ primeiro_nome[0]|upper }}</div><div><b>{{ conta.nome }}</b><span>{{ conta.usuario }}</span></div></div>
+      <form method="post" action="{{ url_for('demo_logout') }}"><button type="submit">{{ icon('out') }} Sair da demo</button></form>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <div class="top">
+      <button class="burger" id="burger" aria-label="Abrir menu">{{ icon('menu') }}</button>
+      <h1 id="titulo">Início</h1>
+      <span class="chip" id="chip">{{ icon('clock') }} <span id="restante">a calcular…</span></span>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ INÍCIO ═══ -->
+      <section class="sec on" id="sec-inicio">
+        <div class="hero">
+          <h2>Olá, {{ primeiro_nome }}! 👋</h2>
+          <p>Bem-vindo à tua área de demonstração. Explora os nossos modelos de sites, vê como funciona um sistema de gestão de stock e pede o teu projeto quando quiseres.</p>
+          <div class="btns">
+            <button class="btn" data-go="modelos">Ver modelos de sites</button>
+            <button class="btn ghost" data-go="stock">Testar gestão de stock</button>
+          </div>
+        </div>
+
+        <div class="grid g3" style="margin-bottom:24px">
+          <button class="card go" data-go="modelos"><div class="ico">{{ icon('layout') }}</div><h3>Modelos de Sites</h3><p>Landing page, site institucional e loja online, prontos a personalizar.</p></button>
+          <button class="card go" data-go="stock"><div class="ico">{{ icon('box') }}</div><h3>Gestão de Stock</h3><p>Controlo de produtos, entradas, saídas e inventário. Experimenta o simulador.</p></button>
+          <button class="card go" data-go="projeto"><div class="ico">{{ icon('send') }}</div><h3>Solicitar Projeto</h3><p>Conta-nos a tua ideia e recebe uma proposta em menos de 24 horas.</p></button>
+        </div>
+
+        <div class="grid g2">
+          <div class="card">
+            <h3>Como aproveitar a demonstração</h3>
+            <ol class="steps" style="margin-top:14px">
+              <li>Vê os <b>modelos de sites</b> e abre a demonstração ao vivo de cada um.</li>
+              <li>Experimenta o <b>simulador de stock</b>: regista entradas e saídas.</li>
+              <li>Gostaste? Clica em <b>“Solicitar este modelo”</b> ou pede um projeto à medida.</li>
+            </ol>
+          </div>
+          <div class="card">
+            <h3>A tua demonstração</h3>
+            <div class="grid" style="gap:10px;margin-top:14px;font-size:.9rem">
+              <div class="ct"><div class="ico">{{ icon('mail') }}</div><div><b>{{ conta.email }}</b><span>E-mail registado</span></div></div>
+              <div class="ct"><div class="ico">{{ icon('brief') }}</div><div><b>{{ conta.servico }}</b><span>Serviço de interesse</span></div></div>
+              <div class="ct"><div class="ico">{{ icon('clock') }}</div><div><b id="expira-txt">—</b><span>Acesso válido até</span></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ MODELOS ═══ -->
+      <section class="sec" id="sec-modelos">
+        <header><h2>Modelos de Sites</h2><p>Modelos profissionais à venda, prontos a personalizar com o teu logótipo, cores e textos. Preços em Kwanzas, pagamento único.</p></header>
+        <div class="grid g3">
+          {% for m in modelos %}
+          <article class="card mod">
+            <div class="im"><img src="{{ url_for('static', filename='img/' ~ m.imagem) }}" alt="Pré-visualização do modelo {{ m.nome }}" loading="lazy"><span class="tag">{{ m.tipo }}</span></div>
+            <div class="bd">
+              <h3>{{ m.nome }}</h3>
+              <p>{{ m.desc }}</p>
+              <ul>{% for f in m.extras %}<li>{{ f }}</li>{% endfor %}</ul>
+              <div class="ft">
+                <div class="price"><div><small>Pagamento único</small><br><b>{{ m.preco|kz }}</b></div><small>{{ m.prazo }}</small></div>
+                <div class="acts">
+                  <a class="btn ghost sm" href="{{ url_for('modelo_ao_vivo', mid=m.id) }}" target="_blank" rel="noopener">Ver demonstração ao vivo ↗</a>
+                  <button class="btn sm" data-modelo="{{ m.id }}">Solicitar este modelo</button>
+                </div>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- ═══ SERVIÇOS ═══ -->
+      <section class="sec" id="sec-servicos">
+        <header><h2>Serviços</h2><p>Do desenho ao lançamento e ao apoio contínuo: tratamos de tudo para a tua presença digital.</p></header>
+        <div class="grid g2">
+          <div class="card feat"><div class="ico">{{ icon('layout') }}</div><div><h4>Criação de Sites</h4><p>Websites e landing pages rápidos, responsivos e otimizados para converter visitantes em clientes.</p><button class="btn ghost sm" style="margin-top:12px" data-projeto="Landing Page">Pedir orçamento</button></div></div>
+          <div class="card feat"><div class="ico">{{ icon('shop') }}</div><div><h4>Loja Online</h4><p>Catálogo, carrinho e encomendas com preços em Kwanzas e pagamento na entrega.</p><button class="btn ghost sm" style="margin-top:12px" data-projeto="Loja Online">Pedir orçamento</button></div></div>
+          <div class="card feat"><div class="ico">{{ icon('box') }}</div><div><h4>Sistemas de Gestão de Stock</h4><p>Controlo total de produtos, entradas, saídas e inventário, feito à medida do teu negócio.</p><button class="btn ghost sm" style="margin-top:12px" data-projeto="Sistema de Gestão de Stock">Pedir orçamento</button></div></div>
+          <div class="card feat"><div class="ico">{{ icon('pen') }}</div><div><h4>UX/UI Design e Suporte</h4><p>Interfaces simples de usar e apoio técnico direto da nossa equipa depois do lançamento.</p><button class="btn ghost sm" style="margin-top:12px" data-projeto="Outro">Pedir orçamento</button></div></div>
+        </div>
+      </section>
+
+      <!-- ═══ GESTÃO DE STOCK ═══ -->
+      <section class="sec" id="sec-stock">
+        <header><h2>Gestão de Stock</h2><p>Criamos sistemas para controlar produtos, entradas, saídas e inventário — sem folhas de cálculo, sem perdas e sem surpresas.</p></header>
+
+        <div class="grid g3" style="margin-bottom:24px">
+          <div class="card feat"><div class="ico">{{ icon('box') }}</div><div><h4>Produtos</h4><p>Catálogo com código, categoria, preço e stock mínimo.</p></div></div>
+          <div class="card feat"><div class="ico">{{ icon('in') }}</div><div><h4>Entradas</h4><p>Regista compras e reposições com data e fornecedor.</p></div></div>
+          <div class="card feat"><div class="ico">{{ icon('outbox') }}</div><div><h4>Saídas</h4><p>Vendas e consumos atualizam o stock automaticamente.</p></div></div>
+          <div class="card feat"><div class="ico">{{ icon('scan') }}</div><div><h4>Inventário</h4><p>Contagens periódicas e ajustes com histórico completo.</p></div></div>
+          <div class="card feat"><div class="ico">{{ icon('bell') }}</div><div><h4>Alertas</h4><p>Aviso imediato quando um produto está abaixo do mínimo.</p></div></div>
+          <div class="card feat"><div class="ico">{{ icon('chart') }}</div><div><h4>Relatórios</h4><p>Valor do inventário, mais vendidos e movimentos por período.</p></div></div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <h3>Simulador interativo</h3>
+          <p style="margin-bottom:16px">Experimenta: regista entradas e saídas e vê o stock, os alertas e o valor do inventário a atualizar em tempo real. <i>(Dados de exemplo.)</i></p>
+          <div class="grid g4" style="margin-bottom:18px">
+            <div class="card kpi"><small>Produtos</small><b id="k-prod">0</b></div>
+            <div class="card kpi"><small>Unidades em stock</small><b id="k-un">0</b></div>
+            <div class="card kpi warn"><small>Alertas de stock</small><b id="k-al">0</b></div>
+            <div class="card kpi"><small>Valor do inventário</small><b id="k-val">0 Kz</b></div>
+          </div>
+          <div class="stock-grid" id="stock-grid">
+            <div class="tw"><table class="tbl"><thead><tr><th>Produto</th><th>Stock</th><th>Mín.</th><th>Preço</th><th>Estado</th><th>Movimento</th></tr></thead><tbody id="stock-body"></tbody></table></div>
+            <div><h3 style="font-size:.95rem;margin-bottom:10px">Últimos movimentos</h3><ul class="log" id="stock-log"><li><span>Ainda sem movimentos.</span></li></ul></div>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
+          <div><h3>Queres um sistema assim para o teu negócio?</h3><p>Desenhamos e instalamos o sistema à medida, com formação incluída.</p></div>
+          <button class="btn" data-stock>Quero um sistema de stock</button>
+        </div>
+      </section>
+
+      <!-- ═══ PROJETO ═══ -->
+      <section class="sec" id="sec-projeto">
+        <header><h2>Solicitar Projeto</h2><p>Descreve o que precisas. A nossa equipa analisa e responde com uma proposta em menos de 24 horas.</p></header>
+        <div class="card" style="max-width:720px">
+          <form class="frm" id="f-projeto">
+            <div class="row2">
+              <label class="fld"><span>Tipo de projeto</span>
+                <select class="inp" name="tipo_projeto" id="p-tipo" required>
+                  <option value="">Escolhe uma opção…</option>
+                  <option>Landing Page</option><option>Site Institucional</option><option>Loja Online</option>
+                  <option>Sistema de Gestão de Stock</option><option>Outro</option>
+                </select></label>
+              <label class="fld"><span>Prazo desejado</span>
+                <select class="inp" name="prazo"><option>Sem pressa</option><option>Até 1 semana</option><option>Até 2 semanas</option><option>Até 1 mês</option></select></label>
+            </div>
+            <label class="fld"><span>Orçamento estimado (Kz) — opcional</span><input class="inp" name="orcamento" placeholder="ex.: 200.000 Kz" maxlength="40"></label>
+            <label class="fld"><span>Descreve a tua ideia</span><textarea class="inp" name="mensagem" placeholder="Conta-nos sobre o teu negócio e o que queres alcançar…" maxlength="1500" required></textarea></label>
+            <div><button class="btn" type="submit">Enviar pedido de projeto</button></div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ═══ CONTACTO ═══ -->
+      <section class="sec" id="sec-contacto">
+        <header><h2>Contacto</h2><p>Fala diretamente com a nossa equipa. Respondemos em menos de 24 horas.</p></header>
+        <div class="grid g2">
+          <div class="card" style="display:grid;gap:18px;align-content:start">
+            <div class="ct"><div class="ico">{{ icon('mail') }}</div><div><b>envlomenttechnologies@gmail.com</b><span>E-mail</span></div></div>
+            <div class="ct"><div class="ico">{{ icon('phone') }}</div><div><b>+244 952 393 828</b><span>Telefone / WhatsApp</span></div></div>
+            <div class="ct"><div class="ico">{{ icon('pin') }}</div><div><b>Luanda, Angola</b><span>Localização</span></div></div>
+            <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/244952393828?text={{ ('Olá! Estou a ver a demonstração da Envloument (' ~ conta.nome ~ ').')|urlencode }}">Falar no WhatsApp</a>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:14px">Envia-nos uma mensagem</h3>
+            <form class="frm" id="f-contacto">
+              <label class="fld"><span>Assunto</span><input class="inp" name="assunto" value="Dúvida sobre a demonstração" maxlength="80" required></label>
+              <label class="fld"><span>Mensagem</span><textarea class="inp" name="mensagem" maxlength="1500" required placeholder="Escreve aqui…"></textarea></label>
+              <div><button class="btn" type="submit">Enviar mensagem</button></div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  var TITULOS = { inicio: 'Início', modelos: 'Modelos de Sites', servicos: 'Serviços', stock: 'Gestão de Stock', projeto: 'Solicitar Projeto', contacto: 'Contacto' };
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  // ── navegação entre secções ──
+  function ir(id) {
+    if (!TITULOS[id]) id = 'inicio';
+    $$('.sec').forEach(function (s) { s.classList.toggle('on', s.id === 'sec-' + id); });
+    $$('.nav a').forEach(function (a) { a.classList.toggle('on', a.dataset.go === id); });
+    $('#titulo').textContent = TITULOS[id];
+    document.title = TITULOS[id] + ' | Envloument Demo';
+    if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+    fechaMenu(); window.scrollTo({ top: 0 });
+  }
+  $$('[data-go]').forEach(function (el) {
+    el.addEventListener('click', function (e) { e.preventDefault(); ir(el.dataset.go); });
+  });
+  window.addEventListener('hashchange', function () { ir(location.hash.slice(1)); });
+
+  // ── menu móvel ──
+  function fechaMenu() { $('#side').classList.remove('open'); $('#scrim').classList.remove('on'); }
+  $('#burger').addEventListener('click', function () { $('#side').classList.add('open'); $('#scrim').classList.add('on'); });
+  $('#scrim').addEventListener('click', fechaMenu);
+
+  // ── toast ──
+  var tt;
+  function toast(msg, erro) {
+    var t = $('#toast'); t.textContent = msg; t.className = 'toast on' + (erro ? ' err' : '');
+    clearTimeout(tt); tt = setTimeout(function () { t.classList.remove('on'); }, 4500);
+  }
+
+  // ── validade da demo (contagem decrescente) ──
+  var EXPIRA = new Date('{{ expira_em }}');
+  $('#expira-txt').textContent = EXPIRA.toLocaleString('pt-PT', { dateStyle: 'medium', timeStyle: 'short' });
+  function tick() {
+    var ms = EXPIRA - new Date();
+    if (ms <= 0) { location.href = '/demo/login?expirado=1'; return; }
+    var h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000);
+    $('#restante').textContent = 'Demo expira em ' + h + 'h ' + (m < 10 ? '0' : '') + m + 'm';
+    $('#chip').classList.toggle('ok', h >= 6);
+  }
+  tick(); setInterval(tick, 30000);
+
+  // ── pedidos ──
+  function enviar(payload, btn, ok) {
+    if (btn) btn.disabled = true;
+    return fetch('/api/demo/pedido', {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (r.status === 401) { location.href = '/demo/login?expirado=1'; return; }
+        if (!r.ok) throw new Error(j.error || 'Não foi possível enviar o pedido.');
+        toast(j.message); if (ok) ok();
+      });
+    }).catch(function (e) { toast(e.message, true); if (btn) btn.disabled = false; })
+      .then(function () { if (btn && !btn.classList.contains('done')) btn.disabled = false; });
+  }
+  $$('[data-modelo]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      enviar({ tipo: 'modelo', modelo: b.dataset.modelo }, b, function () {
+        b.classList.add('done'); b.textContent = '✓ Pedido enviado'; b.disabled = true;
+      });
+    });
+  });
+  $$('[data-projeto]').forEach(function (b) {
+    b.addEventListener('click', function () { $('#p-tipo').value = b.dataset.projeto; ir('projeto'); });
+  });
+  $('[data-stock]').addEventListener('click', function (e) {
+    var b = e.currentTarget;
+    enviar({ tipo: 'stock' }, b, function () { b.classList.add('done'); b.textContent = '✓ Pedido enviado'; b.disabled = true; });
+  });
+  $('#f-projeto').addEventListener('submit', function (e) {
+    e.preventDefault(); var f = e.target, d = Object.fromEntries(new FormData(f)); d.tipo = 'projeto';
+    enviar(d, f.querySelector('button'), function () { f.reset(); });
+  });
+  $('#f-contacto').addEventListener('submit', function (e) {
+    e.preventDefault(); var f = e.target, d = Object.fromEntries(new FormData(f)); d.tipo = 'contacto';
+    enviar(d, f.querySelector('button'), function () { f.querySelector('textarea').value = ''; });
+  });
+
+  // ── simulador de stock ──
+  var PROD = [
+    { n: 'Arroz 25 kg', q: 42, min: 20, p: 28500 },
+    { n: 'Óleo de cozinha 5 L', q: 18, min: 20, p: 9800 },
+    { n: 'Açúcar 10 kg', q: 6, min: 15, p: 14200 },
+    { n: 'Água 1,5 L (pack 6)', q: 120, min: 40, p: 2400 },
+    { n: 'Sabão em barra (cx)', q: 0, min: 10, p: 6500 },
+    { n: 'Farinha de trigo 5 kg', q: 33, min: 15, p: 5900 }
+  ];
+  var LOG = [];
+  function kz(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' Kz'; }
+  function estado(p) { return p.q === 0 ? ['out', 'Esgotado'] : p.q <= p.min ? ['low', 'Stock baixo'] : ['ok', 'Normal']; }
+  function desenha() {
+    var un = 0, al = 0, val = 0;
+    $('#stock-body').innerHTML = PROD.map(function (p, i) {
+      var e = estado(p); un += p.q; val += p.q * p.p; if (e[0] !== 'ok') al++;
+      return '<tr><td><b>' + p.n + '</b></td><td>' + p.q + '</td><td>' + p.min + '</td><td>' + kz(p.p) + '</td>' +
+        '<td><span class="st ' + e[0] + '">' + e[1] + '</span></td>' +
+        '<td><div class="mv"><button class="in" data-i="' + i + '" data-d="10">+ Entrada</button><button class="out" data-i="' + i + '" data-d="-5">− Saída</button></div></td></tr>';
+    }).join('');
+    $('#k-prod').textContent = PROD.length; $('#k-un').textContent = un; $('#k-al').textContent = al; $('#k-val').textContent = kz(val);
+    if (LOG.length) $('#stock-log').innerHTML = LOG.slice(0, 6).map(function (l) {
+      return '<li><span>' + l.n + ' <small style="color:#94a3b8">· ' + l.h + '</small></span><span class="' + (l.d > 0 ? 'p' : 'm') + '">' + (l.d > 0 ? '+' : '') + l.d + '</span></li>';
+    }).join('');
+  }
+  $('#stock-body').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var p = PROD[+b.dataset.i], d = +b.dataset.d;
+    if (d < 0 && p.q === 0) { toast('Sem stock para registar saída.', true); return; }
+    var real = d < 0 ? -Math.min(-d, p.q) : d; p.q += real;
+    LOG.unshift({ n: p.n, d: real, h: new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) });
+    desenha();
+  });
+  desenha();
+
+  ir(location.hash.slice(1) || 'inicio');
+})();
+</script>
+</body>
+</html>

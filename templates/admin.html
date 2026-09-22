@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin | Envloument</title><meta name="robots" content="noindex">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}"></head>
+<body><div class="adm">
+<h1>Painel Envloument</h1><p style="color:var(--mut)">Pedidos de demonstração e pedidos feitos na área demo.</p>
+
+<h2>Demonstrações solicitadas ({{ contas|length }})</h2>
+<div class="card tw"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Empresa</th><th>Serviço</th><th>Utilizador</th><th>Criada (UTC)</th><th>Expira (UTC)</th><th>Estado</th></tr></thead><tbody>
+{% for c in contas %}<tr><td>{{ c.id }}</td><td>{{ c.nome }}</td><td>{{ c.email }}</td><td><a href="https://wa.me/{{ c.telefone|replace('+','')|replace(' ','')|replace('-','')|replace('(','')|replace(')','') }}" target="_blank">{{ c.telefone }}</a></td><td>{{ c.empresa or '—' }}</td><td>{{ c.servico }}</td><td>{{ c.usuario }}</td><td>{{ c.criado_em[:16]|replace('T',' ') }}</td><td>{{ c.expira_em[:16]|replace('T',' ') }}</td>
+<td>{% if c.expira_em > agora %}<span class="st ok">Ativa</span>{% else %}<span class="st out">Expirada</span>{% endif %}</td></tr>
+{% else %}<tr><td colspan="10">Ainda sem pedidos.</td></tr>{% endfor %}</tbody></table></div>
+
+<h2>Pedidos na área demo ({{ pedidos|length }})</h2>
+<div class="card tw"><table class="tbl"><thead><tr><th>#</th><th>Tipo</th><th>Assunto</th><th>Cliente</th><th>Contacto</th><th>Mensagem</th><th>Data (UTC)</th></tr></thead><tbody>
+{% for p in pedidos %}<tr><td>{{ p.id }}</td><td>{{ p.tipo }}</td><td>{{ p.assunto }}</td><td>{{ p.nome }}</td><td>{{ p.email }}<br>{{ p.telefone }}</td><td class="msg">{{ p.mensagem }}</td><td>{{ p.criado_em[:16]|replace('T',' ') }}</td></tr>
+{% else %}<tr><td colspan="7">Ainda sem pedidos.</td></tr>{% endfor %}</tbody></table></div>
+</div></body></html>
