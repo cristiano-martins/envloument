@@ -48,7 +48,7 @@
     </nav>
     <div class="side-foot">
       <div class="usr"><div class="av">{{ primeiro_nome[0]|upper }}</div><div><b>{{ conta.nome }}</b><span>{{ conta.usuario }}</span></div></div>
-      <form method="post" action="{{ url_for('demo_logout') }}"><button type="submit">{{ icon('out') }} Sair da demo</button></form>
+      <form method="post" action="{{ url_for('demo_logout') }}"><input type="hidden" name="csrf" value="{{ csrf_token() }}"><button type="submit">{{ icon('out') }} Sair da demo</button></form>
     </div>
   </aside>
   <div class="scrim" id="scrim"></div>
@@ -199,6 +199,12 @@
             <div class="ct"><div class="ico">{{ icon('phone') }}</div><div><b>+244 952 393 828</b><span>Telefone / WhatsApp</span></div></div>
             <div class="ct"><div class="ico">{{ icon('pin') }}</div><div><b>Luanda, Angola</b><span>Localização</span></div></div>
             <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/244952393828?text={{ ('Olá! Estou a ver a demonstração da Envloument (' ~ conta.nome ~ ').')|urlencode }}">Falar no WhatsApp</a>
+            <div class="soc">
+              <a href="https://www.instagram.com/envloment/" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://github.com/Envloment-Technologies" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a href="https://www.linkedin.com/company/envloment/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+              <a href="mailto:envlomenttechnologies@gmail.com">E-mail</a>
+            </div>
           </div>
           <div class="card">
             <h3 style="margin-bottom:14px">Envia-nos uma mensagem</h3>

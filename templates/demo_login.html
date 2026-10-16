@@ -12,12 +12,12 @@
 <main class="lg">
   <section class="lg-art">
     <div>
-      <h2>Vê a Envloument em ação, sem compromisso.</h2>
-      <p>Área exclusiva de demonstração com os nossos modelos de sites e o sistema de gestão de stock.</p>
+      <h2>Área de demonstração Envloument</h2>
+      <p>Ambiente de avaliação com modelos de sites, simulador de gestão de stock e pedido de projeto.</p>
       <ul>
         <li>Modelos de sites prontos a personalizar</li>
         <li>Simulador de gestão de stock</li>
-        <li>Pedido de projeto em poucos cliques</li>
+        <li>Pedido de projeto num só passo</li>
       </ul>
     </div>
   </section>
@@ -25,24 +25,28 @@
   <section class="lg-form">
     <div class="lg-box">
       <a class="brand" href="/"><img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="">Envloument</a>
-      <h1>Login Demo</h1>
-      <p class="sub">Introduz as credenciais temporárias que recebeste ao solicitar a demonstração.</p>
+      <h1>Acesso à demonstração</h1>
+      <p class="sub">Inicia sessão com as credenciais de acesso temporário.</p>
 
-      {% if aviso %}<div class="alert info">{{ aviso }}</div>{% endif %}
+      {% if aviso %}<div class="alert info" role="status">{{ aviso }}</div>{% endif %}
       {% if erro %}<div class="alert err" role="alert">{{ erro }}</div>{% endif %}
 
       <form method="post" action="{{ url_for('demo_login') }}" autocomplete="off">
+        <input type="hidden" name="csrf" value="{{ csrf_token() }}">
         <label class="fld"><span>Utilizador</span>
-          <input class="inp" name="usuario" value="{{ usuario }}" placeholder="ex.: demo_cliente01" autocapitalize="none" spellcheck="false" required {{ '' if usuario else 'autofocus' }}></label>
-        <label class="fld"><span>Palavra-passe temporária</span>
-          <input class="inp" type="password" name="senha" placeholder="ex.: ENV2026-K7M2P" required {{ 'autofocus' if usuario else '' }}></label>
-        <button class="btn block" type="submit">Entrar na demonstração</button>
+          <input class="inp" name="usuario" value="{{ usuario }}" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="40" required {{ '' if usuario else 'autofocus' }}></label>
+        <label class="fld"><span>Palavra-passe</span>
+          <span class="pw"><input class="inp" id="senha" type="password" name="senha" maxlength="128" autocomplete="new-password" required {{ 'autofocus' if usuario else '' }}>
+          <button type="button" class="pw-t" id="ver" aria-label="Mostrar palavra-passe" aria-pressed="false">Mostrar</button></span></label>
+        <button class="btn block" type="submit">Entrar</button>
       </form>
 
-      <p class="lg-foot">Ainda não tens credenciais? <a href="/#demo">Solicitar Demonstração</a></p>
+      <p class="lg-foot"><a href="{{ url_for('demo_recuperar') }}">Esqueci a palavra-passe</a></p>
+      <p class="lg-foot" style="margin-top:8px">Sem credenciais? <a href="/#demo">Solicitar demonstração</a></p>
       <a class="lg-back" href="/">← Voltar ao site</a>
     </div>
   </section>
 </main>
+<script>(function(){var i=document.getElementById("senha"),b=document.getElementById("ver");b.addEventListener("click",function(){var s=i.type==="password";i.type=s?"text":"password";b.textContent=s?"Ocultar":"Mostrar";b.setAttribute("aria-pressed",s)})})();</script>
 </body>
 </html>

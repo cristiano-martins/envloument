@@ -3,7 +3,12 @@
 <title>Admin | Envloument</title><meta name="robots" content="noindex">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}"></head>
 <body><div class="adm">
-<h1>Painel Envloument</h1><p style="color:var(--mut)">Pedidos de demonstração e pedidos feitos na área demo.</p>
+<h1>Painel Envloument</h1><p><a class="btn ghost sm" href="/admin/export.csv">Exportar demonstrações (CSV)</a></p><p style="color:var(--mut)">Pedidos de demonstração e pedidos feitos na área demo.</p>
+
+<h2>Mensagens do formulário de contacto ({{ leads|length }})</h2>
+<div class="card tw"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>E-mail</th><th>Mensagem</th><th>Data (UTC)</th></tr></thead><tbody>
+{% for l in leads %}<tr><td>{{ l.id }}</td><td>{{ l.nome }}</td><td><a href="mailto:{{ l.email }}">{{ l.email }}</a></td><td class="msg">{{ l.mensagem }}</td><td>{{ l.created_at[:16]|replace('T',' ') }}</td></tr>
+{% else %}<tr><td colspan="5">Ainda sem mensagens.</td></tr>{% endfor %}</tbody></table></div>
 
 <h2>Demonstrações solicitadas ({{ contas|length }})</h2>
 <div class="card tw"><table class="tbl"><thead><tr><th>#</th><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Empresa</th><th>Serviço</th><th>Utilizador</th><th>Criada (UTC)</th><th>Expira (UTC)</th><th>Estado</th></tr></thead><tbody>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recuperar acesso | Envloument</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="{{ url_for('static', filename='img/logo.jpg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/demo.css') }}">
+</head>
+<body>
+<main class="lg">
+  <section class="lg-art"><div>
+    <h2>Recuperar acesso</h2>
+    <p>Confirma os dados usados no pedido de demonstração para gerares uma nova palavra-passe.</p>
+  </div></section>
+  <section class="lg-form"><div class="lg-box">
+    <a class="brand" href="/"><img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="">Envloument</a>
+    {% if nova %}
+      <h1>Nova palavra-passe</h1>
+      <p class="sub">A palavra-passe anterior deixou de funcionar. Guarda esta agora.</p>
+      <div class="alert info" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1rem">
+        Utilizador: <b id="u">{{ nova.usuario }}</b><br>Palavra-passe: <b id="p">{{ nova.senha }}</b></div>
+      <button class="btn ghost block" type="button" id="dl" style="margin-bottom:10px">Descarregar credenciais (.txt)</button>
+      <a class="btn block" href="{{ url_for('demo_login', u=nova.usuario) }}">Entrar na demonstração</a>
+      <script src="{{ url_for('static', filename='js/cred.js') }}"></script>
+      <script>(function(){function d(){baixarCredenciais(document.getElementById('u').textContent,document.getElementById('p').textContent,'{{ nova.expira }}')}document.getElementById('dl').addEventListener('click',d);d();})();</script>
+    {% else %}
+      <h1>Esqueci a palavra-passe</h1>
+      <p class="sub">Por segurança, as palavras-passe são guardadas cifradas e não podem ser mostradas. Geramos uma nova.</p>
+      {% if erro %}<div class="alert err" role="alert">{{ erro }}</div>{% endif %}
+      <form method="post" autocomplete="off">
+        <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+        <label class="fld"><span>Utilizador</span><input class="inp" name="usuario" autocapitalize="none" spellcheck="false" maxlength="40" required autofocus></label>
+        <label class="fld"><span>E-mail usado no pedido</span><input class="inp" type="email" name="email" maxlength="160" required></label>
+        <label class="fld"><span>WhatsApp / Telefone usado no pedido</span><input class="inp" type="tel" name="telefone" maxlength="20" required></label>
+        <button class="btn block" type="submit">Gerar nova palavra-passe</button>
+      </form>
+      <a class="lg-back" href="{{ url_for('demo_login') }}">← Voltar ao login</a>
+    {% endif %}
+  </div></section>
+</main>
+</body>
+</html>

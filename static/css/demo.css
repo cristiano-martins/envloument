@@ -166,3 +166,11 @@ textarea.inp{height:auto;padding:12px 14px;resize:vertical;min-height:110px}
   .g2,.g3,.g4,.row2{grid-template-columns:1fr}
   .chip{font-size:.74rem;padding:6px 11px}.hero{padding:26px}
 }
+
+.soc{display:flex;flex-wrap:wrap;gap:8px}.soc a{border:1px solid var(--line);border-radius:99px;padding:7px 14px;font-size:.82rem;font-weight:700;color:var(--pri);background:#fff}.soc a:hover{border-color:var(--pri)}
+@media(max-width:860px){.card{padding:18px}.tbl{font-size:.82rem}.toast{left:16px;right:16px;max-width:none}}
+/* login: campo de palavra-passe com botão mostrar/ocultar */
+.pw{position:relative;display:block}.pw .inp{padding-right:84px}
+.pw-t{position:absolute;right:6px;top:6px;height:36px;padding:0 12px;border:0;border-radius:8px;background:transparent;color:var(--pri);font-weight:700;font-size:.8rem}
+.pw-t:hover{background:#eff6ff}
+.inp:focus-visible,.btn:focus-visible,.pw-t:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
