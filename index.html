@@ -1624,6 +1624,69 @@
         .form-grupo input, .form-grupo textarea { border-radius: 14px; }
         footer { background: #060b18; }
 
+        /* ══════════ ASSISTENTE + FORMULÁRIO ══════════ */
+        #chat-window { width: min(380px, calc(100vw - 32px)); height: min(520px, calc(100dvh - 120px)); max-height: none; }
+        #chat-window:not(.open) { visibility: hidden; position: absolute; right: 0; bottom: 64px; }
+        .chat-messages { overscroll-behavior: contain; min-height: 0; }
+        .msg-bubble { overflow-wrap: anywhere; word-break: break-word; max-width: 85%; }
+        #chat-input { min-width: 0; }
+        .chat-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 0 4px 36px; }
+        .chat-chips button { border: 1px solid var(--azul-claro); background: transparent; color: var(--azul-claro); border-radius: 50px; padding: 6px 12px; font: 600 .78rem inherit; font-family: inherit; cursor: pointer; text-align: left; }
+        .chat-chips button:hover { background: var(--azul-claro); color: #fff; }
+        .form-status { margin-top: 12px; font-size: .9rem; border-radius: 12px; }
+        .form-status.ok { padding: 12px 14px; background: rgba(34,197,94,.12); color: #16a34a; }
+        .form-status.err { padding: 12px 14px; background: rgba(239,68,68,.12); color: #ef4444; }
+        @media (max-width: 480px) {
+            #chat-bubble .bubble-label, #chat-bubble .bubble-dot { display: none; }
+            #chat-bubble { padding: 12px; }
+            #chat-window { width: calc(100vw - 32px); height: min(480px, calc(100dvh - 100px)); }
+        }
+
+
+        /* ══════════ v3: FUNDO, LIDERANÇA, EFEITOS ══════════ */
+        .hero::before { background: linear-gradient(180deg, rgba(7,12,28,.58) 0%, rgba(7,12,28,.90) 100%), radial-gradient(circle at 15% 25%, rgba(37,99,235,.35) 0, transparent 42%), radial-gradient(circle at 85% 75%, rgba(6,182,212,.28) 0, transparent 40%), url('/static/img/fundo.jpg') center 30% / cover no-repeat, #0b1226; z-index: 0; }
+        #net { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; opacity: .75; pointer-events: none; }
+        .hero > *:not(canvas) { position: relative; z-index: 2; }
+        .cta-final { background: linear-gradient(135deg, #0b1226 0%, #1e3a8a 60%, #0e7490 100%); padding: 80px 0 72px; margin-top: 90px; }
+        .cta-final::before { display: none; }
+        .cta-final-inner { margin-top: 0; }
+        @media (max-width: 700px) { .cta-final-inner { margin-top: 0; } }
+        .tech-strip { background: #070c1c; border-top: 1px solid rgba(148,163,184,.14); border-bottom: 1px solid rgba(148,163,184,.14); overflow: hidden; padding: 14px 0; }
+        .tech-strip .track { display: flex; width: max-content; animation: faixa 38s linear infinite; }
+        .tech-strip span { font: 600 .74rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .18em; text-transform: uppercase; color: #64748b; padding: 0 26px; white-space: nowrap; }
+        .tech-strip span::before { content: "›"; color: #22d3ee; margin-right: 12px; }
+        @keyframes faixa { to { transform: translateX(-50%); } }
+        .equipa-section { background: linear-gradient(180deg, var(--gelo) 0%, rgba(37,99,235,.07) 50%, var(--gelo) 100%); }
+        .grid-lider { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: 1fr; gap: 24px; max-width: 1140px; margin: 48px auto 0; }
+        .lider-card { grid-column: span 2; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; background: var(--card-bg); border: 1px solid var(--borda); border-radius: 24px; padding: 34px 26px 28px; overflow: hidden; transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s, border-color .35s; }
+        .lider-card:nth-child(4) { grid-column: 2 / span 2; }
+        .lider-card:nth-child(5) { grid-column: 4 / span 2; }
+        .equipa-section:not(.active) .lider-card { opacity: 0; }
+        .equipa-section.active .lider-card { animation: subir .8s cubic-bezier(.16,1,.3,1) var(--d, 0s) backwards; }
+        @keyframes subir { from { opacity: 0; transform: translateY(34px) scale(.97); } }
+        .lider-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgba(37,99,235,.14), transparent 65%); }
+        .lider-card:hover { transform: translateY(-8px); box-shadow: 0 26px 60px rgba(37,99,235,.18); border-color: rgba(59,130,246,.55); }
+        .lider-card:hover::after { opacity: 1; }
+        .lider-foto { position: relative; flex: none; width: 112px; height: 112px; border-radius: 50%; padding: 4px; background: conic-gradient(from 0deg, #2563eb, #06b6d4, #2563eb); margin-bottom: 18px; transition: transform .5s cubic-bezier(.16,1,.3,1); }
+        .lider-card:hover .lider-foto { transform: rotate(8deg) scale(1.06); }
+        .lider-foto > span { width: 100%; height: 100%; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; font-weight: 800; font-size: 1.9rem; }
+        .lider-foto > img { position: absolute; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); border-radius: 50%; object-fit: cover; background: var(--card-bg); }
+        .lider-card h3 { font-size: 1.2rem; margin-bottom: 2px; color: var(--azul-escuro); }
+        .lider-cargo { color: var(--azul-claro); font-weight: 700; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 12px; }
+        .lider-card p { color: var(--texto-mutado); font-size: .9rem; line-height: 1.65; flex: 1; }
+        .lider-redes { display: flex; gap: 10px; margin-top: 16px; }
+        .lider-redes:empty { display: none; }
+        .lider-redes a { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: rgba(37,99,235,.1); color: var(--azul-claro); transition: .25s; }
+        .lider-redes a:hover { background: var(--azul-claro); color: #fff; transform: translateY(-3px); }
+        @media (max-width: 1000px) { .grid-lider { grid-template-columns: repeat(2, 1fr); } .lider-card, .lider-card:nth-child(4), .lider-card:nth-child(5) { grid-column: auto; } .lider-card:nth-child(5) { grid-column: 1 / -1; width: calc(50% - 12px); justify-self: center; } }
+        @media (max-width: 640px) { .grid-lider { grid-template-columns: 1fr; } .lider-card:nth-child(5) { width: auto; } }
+        .hero h1 .txt-animado::after { content: ""; display: inline-block; width: 3px; height: .9em; background: #67e8f9; margin-left: 4px; vertical-align: -.1em; animation: piscar 1s steps(1) infinite; }
+        @keyframes piscar { 50% { opacity: 0; } }
+        .btn-principal, .nav-btn { position: relative; overflow: hidden; }
+        .btn-principal::after { content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent); transform: skewX(-20deg); animation: brilho 4.5s ease-in-out infinite; }
+        @keyframes brilho { 0%, 60% { left: -80%; } 100% { left: 140%; } }
+        @media (prefers-reduced-motion: reduce) { .lider-card, .tech-strip .track, .btn-principal::after, .txt-animado::after { animation: none !important; } .equipa-section:not(.active) .lider-card { opacity: 1; } }
+
         /* ══════════ DESEMPENHO MOBILE ══════════ */
         @media (max-width: 768px) {
             .hero::before { animation: none; will-change: auto; }
@@ -1705,6 +1768,7 @@
 
     <!-- Hero -->
     <section id="inicio" class="hero" aria-label="Apresentação">
+        <canvas id="net" aria-hidden="true"></canvas>
         <div class="hero-content">
             <div class="hero-badge">
                 <i class="fa-solid fa-circle" style="font-size: 0.5rem; color: #4ade80;"></i>
@@ -1724,10 +1788,11 @@
     </section>
 
     <!-- Stats Strip -->
+    <div class="tech-strip" aria-hidden="true"><div class="track"><span>Frontend</span><span>Backend</span><span>APIs REST</span><span>Bases de dados</span><span>Cibersegurança</span><span>Cloud</span><span>UX/UI</span><span>DevOps</span><span>Pentesting</span><span>E-commerce</span><span>Frontend</span><span>Backend</span><span>APIs REST</span><span>Bases de dados</span><span>Cibersegurança</span><span>Cloud</span><span>UX/UI</span><span>DevOps</span><span>Pentesting</span><span>E-commerce</span></div></div>
     <div class="stats-strip reveal">
         <div class="stats-inner">
             <div class="stat-item">
-                <div class="stat-number">8</div>
+                <div class="stat-number">5</div>
                 <div class="stat-label">Profissionais na Equipa</div>
             </div>
             <div class="stat-item">
@@ -1739,7 +1804,7 @@
                 <div class="stat-label">Tempo de Resposta</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">3</div>
+                <div class="stat-number">9</div>
                 <div class="stat-label">Modelos Prontos a Personalizar</div>
             </div>
         </div>
@@ -1781,60 +1846,46 @@
     <section id="equipa" class="equipa-section reveal">
         <div class="equipa-inner">
             <div class="section-header">
-                <span class="section-eyebrow">Nossa Equipa</span>
-                <h2 class="section-title">Equipa Técnica</h2>
-                <p class="section-subtitle">Engenharia, segurança e design reunidos numa só equipa.</p>
+                <span class="section-eyebrow">Liderança</span>
+                <h2 class="section-title">Nossa Liderança</h2>
+                <p class="section-subtitle">Conhece a equipa responsável por liderar a inovação, o desenvolvimento tecnológico e o crescimento da ENVLOUMENT.</p>
             </div>
-
-            <div class="grid-equipa">
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-crown"></i></div>
+            <div class="grid-lider">
+                <article class="lider-card" style="--d:0.0s">
+                    <div class="lider-foto"><span aria-hidden="true">WM</span><img src="/static/img/equipa/wilson.jpg" alt="Foto de Wilson Matias" width="104" height="104" loading="lazy" decoding="async" onerror="this.remove()"></div>
                     <h3>Wilson Matias</h3>
-                    <div class="membro-cargo">CEO & Founder</div>
-                    <p class="membro-bio">Lidera a visão estratégica da empresa, transformando ideias brutas em objetivos de negócio claros e orientando a equipa rumo à inovação.</p>
-                </div>
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="lider-cargo">CEO & Founder</div>
+                    <p>Lidera a visão estratégica da ENVLOUMENT, definindo os objetivos da empresa, impulsionando a inovação e garantindo que cada projeto gere valor para os clientes.</p>
+                    <div class="lider-redes" data-id="wilson"></div>
+                </article>
+                <article class="lider-card" style="--d:0.1s">
+                    <div class="lider-foto"><span aria-hidden="true">CM</span><img src="/static/img/equipa/cristiano.jpg" alt="Foto de Cristiano Martins" width="104" height="104" loading="lazy" decoding="async" onerror="this.remove()"></div>
                     <h3>Cristiano Martins</h3>
-                    <div class="membro-cargo">Security Analyst & Pen Tester</div>
-                    <p class="membro-bio">Atua na análise preventiva de segurança e infraestrutura, garantindo que as aplicações sejam desenvolvidas sob boas práticas e protegidas contra falhas.</p>
-                </div>
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-compass-drafting"></i></div>
+                    <div class="lider-cargo">Chief Technology Officer (CTO)</div>
+                    <p>Responsável pela direção tecnológica da ENVLOUMENT, liderando o desenvolvimento de soluções digitais, a arquitetura dos sistemas e a área de cibersegurança. Especialista em Pentesting e Segurança Ofensiva, coordena a implementação de boas práticas de segurança, realiza auditorias técnicas, supervisiona a qualidade do código e orienta a evolução tecnológica da empresa.</p>
+                    <div class="lider-redes" data-id="cristiano"></div>
+                </article>
+                <article class="lider-card" style="--d:0.2s">
+                    <div class="lider-foto"><span aria-hidden="true">JK</span><img src="/static/img/equipa/jeremias.jpg" alt="Foto de Jeremias Konde" width="104" height="104" loading="lazy" decoding="async" onerror="this.remove()"></div>
                     <h3>Jeremias Konde</h3>
-                    <div class="membro-cargo">Frontend Developer</div>
-                    <p class="membro-bio">Especialista em dar vida às interfaces, criando layouts reativos, fluidos e visualmente atraentes em qualquer tipo de ecrã.</p>
-                </div>
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div class="lider-cargo">Director of Development</div>
+                    <p>Coordena a equipa de desenvolvimento, distribuindo tarefas, acompanhando a execução dos projetos e assegurando que todas as soluções sejam desenvolvidas com qualidade, desempenho e escalabilidade.</p>
+                    <div class="lider-redes" data-id="jeremias"></div>
+                </article>
+                <article class="lider-card" style="--d:0.3s">
+                    <div class="lider-foto"><span aria-hidden="true">PZ</span><img src="/static/img/equipa/patricia.jpg" alt="Foto de Patrícia Zau" width="104" height="104" loading="lazy" decoding="async" onerror="this.remove()"></div>
                     <h3>Patrícia Zau</h3>
-                    <div class="membro-cargo">Operations & Finance Manager</div>
-                    <p class="membro-bio">Coordena os recursos internos, prazos e a saúde financeira dos projetos, assegurando que as entregas aconteçam com máxima eficiência.</p>
-                </div>
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-server"></i></div>
-                    <h3>Jonilson José</h3>
-                    <div class="membro-cargo">Backend Developer</div>
-                    <p class="membro-bio">Responsável pela arquitetura por trás dos panos, construindo bases de dados robustas, APIs rápidas e regras de negócio lógicas e eficientes.</p>
-                </div>
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-code"></i></div>
+                    <div class="lider-cargo">Finance & Operations Manager</div>
+                    <p>Responsável pela gestão financeira e operacional da empresa, organizando recursos, acompanhando prazos, controlando processos internos e contribuindo para a eficiência administrativa da ENVLOUMENT.</p>
+                    <div class="lider-redes" data-id="patricia"></div>
+                </article>
+                <article class="lider-card" style="--d:0.4s">
+                    <div class="lider-foto"><span aria-hidden="true">JD</span><img src="/static/img/equipa/jony.jpg" alt="Foto de Jony Dias" width="104" height="104" loading="lazy" decoding="async" onerror="this.remove()"></div>
                     <h3>Jony Dias</h3>
-                    <div class="membro-cargo">Full-Stack Developer</div>
-                    <p class="membro-bio">Domina ambas as pontas do desenvolvimento, conectando o banco de dados à interface visual com código ágil e integrações dinâmicas.</p>
-                </div>
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-laptop-code"></i></div>
-                    <h3>Luís</h3>
-                    <div class="membro-cargo">Software Developer</div>
-                    <p class="membro-bio">Desenvolve funcionalidades robustas de ponta a ponta, com foco em código limpo, testável e fácil de manter a longo prazo.</p>
-                </div>
-                <div class="membro-card">
-                    <div class="membro-avatar"><i class="fa-solid fa-code-branch"></i></div>
-                    <h3>Otávio</h3>
-                    <div class="membro-cargo">Software Developer</div>
-                    <p class="membro-bio">Contribui na construção e otimização de novas funcionalidades, sempre atento a boas práticas de segurança e performance.</p>
-                </div>
+                    <div class="lider-cargo">Full-Stack Developer</div>
+                    <p>Desenvolve soluções completas, integrando frontend, backend e bases de dados para criar aplicações modernas, rápidas, seguras e escaláveis.</p>
+                    <div class="lider-redes" data-id="jony"></div>
+                </article>
             </div>
         </div>
     </section>
@@ -1938,15 +1989,22 @@
                 <input type="email" id="input-email" placeholder="o-teu@email.com" autocomplete="email" maxlength="120">
                 <span class="error-msg">Insere um e-mail válido.</span>
             </div>
+            <div class="form-grupo" id="grupo-assunto">
+                <label for="input-assunto">Assunto</label>
+                <input type="text" id="input-assunto" placeholder="Ex.: Orçamento para loja online" autocomplete="off" maxlength="120">
+                <span class="error-msg">Indica o assunto (mínimo 3 caracteres).</span>
+            </div>
             <div class="form-grupo" id="grupo-msg">
                 <label for="input-msg">A tua ideia</label>
-                <textarea id="input-msg" rows="5" placeholder="Descreve o projeto que tens em mente…" maxlength="1500"></textarea>
+                <textarea id="input-msg" rows="5" placeholder="Descreve o projeto que tens em mente…" maxlength="2000"></textarea>
                 <span class="error-msg">Por favor, descreve a tua ideia.</span>
             </div>
             <button type="submit" class="btn-principal btn-submit">
                 <span class="btn-text"><i class="fa-regular fa-paper-plane"></i> Enviar Pedido</span>
                 <span class="btn-spinner"></span>
             </button>
+            <input type="text" id="input-website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+            <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
         </form>
     </section>
 
@@ -2036,7 +2094,7 @@
             </div>
             <div class="chat-messages" id="chat-messages"></div>
             <div class="chat-footer">
-                <input type="text" id="chat-input" placeholder="Escreve a tua pergunta…" 
+                <input type="text" id="chat-input" maxlength="300" autocomplete="off" placeholder="Escreve a tua pergunta…" 
                     onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); enviarMsgChat(); }"
                     aria-label="Mensagem para o assistente">
                 <button id="chat-send" onclick="enviarMsgChat()" aria-label="Enviar mensagem">
@@ -2122,7 +2180,7 @@
                 <button type="button" class="dm-close" onclick="fecharDemo()" aria-label="Fechar">&times;</button>
             </div>
         </div>
-        <div class="dm-stage"><div class="dm-frame" id="dm-frame"><iframe id="dm-iframe" sandbox="" title="Demonstração do modelo"></iframe></div></div>
+        <div class="dm-stage"><div class="dm-frame" id="dm-frame"><iframe id="dm-iframe" sandbox="allow-scripts" title="Demonstração do modelo"></iframe></div></div>
     </div>
 
     <!-- Toast -->
@@ -2290,249 +2348,139 @@
             return valido;
         }
 
+        function mostrarStatus(txt, erro) {
+            const el = document.getElementById('form-status');
+            el.textContent = txt; el.className = 'form-status ' + (erro ? 'err' : 'ok');
+        }
+
+        // Envio direto: o servidor guarda o pedido e envia o e-mail para a equipa.
         async function enviarProjeto(event) {
             event.preventDefault();
-
             const nome = validarCampo('input-nome', 'grupo-nome', v => v.length >= 2 && v.length <= 80);
             const email = validarCampo('input-email', 'grupo-email', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) && v.length <= 120);
-            const msg = validarCampo('input-msg', 'grupo-msg', v => v.length >= 10 && v.length <= 1500);
-
-            if (!nome || !email || !msg) return;
-
-            const nomeVal = document.getElementById('input-nome').value.trim();
-            const emailVal = document.getElementById('input-email').value.trim();
-            const msgVal = document.getElementById('input-msg').value.trim();
-
+            const msg = validarCampo('input-msg', 'grupo-msg', v => v.length >= 10 && v.length <= 2000);
+            const assunto = validarCampo('input-assunto', 'grupo-assunto', v => v.length >= 3 && v.length <= 120);
+            if (!nome || !email || !assunto || !msg) { mostrarStatus('Verifica os campos assinalados.', true); return; }
             const btn = document.querySelector('.btn-submit');
             if (btn.disabled) return;
-            btn.classList.add('loading');
-            btn.disabled = true;
-
-            const enviado = await enviarLead(nomeVal, emailVal, msgVal);
-            btn.classList.remove('loading');
-            btn.disabled = false;
-            if (!enviado) {
-                dispararToastLateral('Não foi possível enviar o pedido. Tenta novamente ou contacta-nos por WhatsApp.', true);
-                return;
+            btn.classList.add('loading'); btn.disabled = true; mostrarStatus('', false);
+            const r = await enviarLead({
+                nome: document.getElementById('input-nome').value.trim(),
+                email: document.getElementById('input-email').value.trim(),
+                assunto: document.getElementById('input-assunto').value.trim(),
+                mensagem: document.getElementById('input-msg').value.trim(),
+                website: document.getElementById('input-website').value
+            });
+            btn.classList.remove('loading'); btn.disabled = false;
+            if (r.ok) {
+                document.getElementById('formulario-projeto').reset();
+                mostrarStatus('Pedido enviado! Respondemos para o teu e-mail em menos de 24 horas.', false);
+            } else {
+                mostrarStatus(r.erro, true);
             }
-
-            abrirModalAI(nomeVal, msgVal);
-            document.getElementById('formulario-projeto').reset();
-            ['input-nome','input-email','input-msg'].forEach(id => document.getElementById(id).classList.remove('error'));
-            ['grupo-nome','grupo-email','grupo-msg'].forEach(id => document.getElementById(id).classList.remove('has-error'));
-            await gerarRespostaIA(nomeVal, msgVal);
         }
 
-        // Envia o pedido ao backend (guardado na base de dados, visível em /admin). Devolve true/false.
-        async function enviarLead(nome, email, mensagem) {
+        async function enviarLead(dados) {
             try {
-                const resp = await fetch('/api/contato', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, mensagem })
-                });
-                return resp.ok;
+                const resp = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
+                if (resp.ok) return { ok: true };
+                const j = await resp.json().catch(() => ({}));
+                return { ok: false, erro: j.error || 'Não foi possível enviar. Tenta novamente ou fala connosco por WhatsApp.' };
             } catch (err) {
-                return false;
+                return { ok: false, erro: 'Sem ligação ao servidor. Tenta novamente ou fala connosco por WhatsApp.' };
             }
         }
 
-        // ── AI MODAL ──
-        function abrirModalAI(nome, mensagem) {
-            const modal = document.getElementById('meuModal');
-            const conteudo = document.getElementById('conteudoModal');
-            conteudo.innerHTML = `
-                <h3 id="modal-titulo" style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
-                    <span style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#3b82f6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="fa-solid fa-robot" style="color:white;font-size:0.9rem;"></i>
-                    </span>
-                    Pedido recebido
-                </h3>
-                <div style="background:var(--gelo);border:1px solid var(--borda);border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:0.88rem;color:var(--texto-mutado);">
-                    <strong style="color:var(--texto-principal);">${escapeHtml(nome)} escreveu:</strong><br>
-                    <span style="font-style:italic;">"${escapeHtml(mensagem)}"</span>
-                </div>
-                <div id="ai-resposta" style="font-size:0.96rem;line-height:1.75;color:var(--texto-principal);min-height:80px;">
-                    <div style="display:flex;align-items:center;gap:10px;color:var(--texto-mutado);">
-                        <div class="ai-dots">
-                            <span></span><span></span><span></span>
-                        </div>
-                        A preparar a resposta…
-                    </div>
-                </div>
-                <a href="${urlWhats('Olá! Acabei de enviar um pedido pelo site (' + nome + '). Podemos continuar por aqui?')}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:#22c55e;color:#fff;text-decoration:none;padding:10px 20px;border-radius:50px;font-weight:600;font-size:.9rem"><i class="fa-brands fa-whatsapp"></i> Continuar no WhatsApp</a>
-                <div id="ai-followup" style="display:none;margin-top:20px;border-top:1px solid var(--borda);padding-top:18px;">
-                    <p style="font-size:0.85rem;color:var(--texto-mutado);margin-bottom:10px;">Tens mais alguma dúvida? Pergunta aqui:</p>
-                    <div style="display:flex;gap:8px;">
-                        <input id="followup-input" type="text" placeholder="Escreve a tua pergunta…"
-                            style="flex:1;padding:10px 14px;border:1px solid var(--borda);border-radius:50px;background:var(--card-bg);color:var(--texto-principal);font-size:0.9rem;outline:none;font-family:inherit;"
-                            onkeydown="if(event.key==='Enter')enviarFollowup()">
-                        <button onclick="enviarFollowup()" style="background:var(--azul-claro);color:white;border:none;border-radius:50px;padding:10px 18px;cursor:pointer;font-size:0.88rem;font-weight:600;font-family:inherit;transition:background 0.2s;"
-                            onmouseover="this.style.background='var(--azul-hover)'" onmouseout="this.style.background='var(--azul-claro)'">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            modal.style.display = 'flex';
-            setTimeout(() => modal.querySelector('.close-btn')?.focus(), 50);
-        }
+        // ── ASSISTENTE ──
+        const CHAT_MAX_MSGS = 40, CHAT_HIST = 8, CHAT_MAX_CHARS = 300;
+        const SUGESTOES = ['Quanto custa um site?', 'Quais são os prazos?', 'Como funciona a demonstração?', 'Fazem lojas online?', 'Têm gestão de stock?', 'Como vos contacto?'];
+        let chatAberto = false, chatHistorico = [], chatIniciado = false, chatOcupado = false, iaServidor = true;
+        const perguntadas = new Set();
 
-        // Assistente virtual: respostas locais baseadas em regras (sem serviços externos).
         async function chamarAPI(historico, contexto) {
+            if (iaServidor) {
+                try {
+                    const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 15000);
+                    const r = await fetch('/api/assistente', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ messages: historico.slice(-CHAT_HIST) }), signal: ctl.signal });
+                    clearTimeout(t);
+                    const j = await r.json().catch(() => ({}));
+                    if (r.ok && j.reply) return j.reply;
+                    if (r.status === 429 && j.error) return j.error;
+                    if (r.status === 503) iaServidor = false;   // IA não configurada: usa só respostas locais
+                } catch (e) {}
+            }
             return respostaLocal(contexto, historico);
         }
 
-        // ── FLOATING CHAT WIDGET ──
-        let chatAberto = false;
-        let chatHistorico = [];
-        let chatIniciado = false;
-
         function toggleChat() {
             chatAberto = !chatAberto;
-            const win = document.getElementById('chat-window');
-            const btn = document.getElementById('chat-bubble');
+            const win = document.getElementById('chat-window'), btn = document.getElementById('chat-bubble');
             win.classList.toggle('open', chatAberto);
             btn.setAttribute('aria-expanded', chatAberto);
-
             if (chatAberto && !chatIniciado) {
                 chatIniciado = true;
-                // Greeting message after short delay
-                setTimeout(() => {
-                    adicionarMsgBot('Olá! Sou o assistente virtual da **Envloument**. Posso indicar modelos, preços em Kz, prazos e contactos. Em que posso ajudar?');
-                }, 300);
+                adicionarMsgBot('Olá! Sou o assistente virtual da **Envloument**. Pergunta-me sobre preços, prazos, modelos, demonstração ou contactos.');
+                mostrarSugestoes(6);
             }
-
-            if (chatAberto) {
-                setTimeout(() => document.getElementById('chat-input')?.focus(), 350);
-            }
+            if (chatAberto) setTimeout(() => document.getElementById('chat-input')?.focus(), 350);
         }
 
+        function limitarMensagens() {
+            const c = document.getElementById('chat-messages');
+            while (c.children.length > CHAT_MAX_MSGS) c.removeChild(c.firstChild);
+            c.scrollTop = c.scrollHeight;
+        }
         function adicionarMsgBot(texto) {
-            const container = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            div.className = 'msg bot';
-            div.innerHTML = `
-                <div class="msg-avatar"><i class="fa-solid fa-robot" style="font-size:0.7rem;"></i></div>
-                <div class="msg-bubble">${formatarTexto(texto)}</div>
-            `;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-            return div;
+            const div = document.createElement('div'); div.className = 'msg bot';
+            div.innerHTML = '<div class="msg-avatar"><i class="fa-solid fa-robot" style="font-size:0.7rem;"></i></div><div class="msg-bubble">' + formatarTexto(texto) + '</div>';
+            document.getElementById('chat-messages').appendChild(div); limitarMensagens();
         }
-
         function adicionarMsgUser(texto) {
-            const container = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            div.className = 'msg user';
-            div.innerHTML = `<div class="msg-bubble">${escapeHtml(texto)}</div>`;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
+            const div = document.createElement('div'); div.className = 'msg user';
+            div.innerHTML = '<div class="msg-bubble">' + escapeHtml(texto) + '</div>';
+            document.getElementById('chat-messages').appendChild(div); limitarMensagens();
         }
-
         function adicionarMsgTyping() {
-            const container = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            div.className = 'msg bot';
-            div.id = 'typing-indicator';
-            div.innerHTML = `
-                <div class="msg-avatar"><i class="fa-solid fa-robot" style="font-size:0.7rem;"></i></div>
-                <div class="msg-bubble" style="padding:12px 16px;">
-                    <div class="ai-dots"><span></span><span></span><span></span></div>
-                </div>
-            `;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
+            const div = document.createElement('div'); div.className = 'msg bot'; div.id = 'typing-indicator';
+            div.innerHTML = '<div class="msg-avatar"><i class="fa-solid fa-robot" style="font-size:0.7rem;"></i></div><div class="msg-bubble" style="padding:12px 16px;"><div class="ai-dots"><span></span><span></span><span></span></div></div>';
+            document.getElementById('chat-messages').appendChild(div); limitarMensagens();
         }
+        function removerTyping() { document.getElementById('typing-indicator')?.remove(); }
 
-        function removerTyping() {
-            document.getElementById('typing-indicator')?.remove();
-        }
-
-        function formatarTexto(txt) {
-            return escapeHtml(String(txt))
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\n\n/g, '<br><br>')
-                .replace(/\n/g, '<br>');
+        function mostrarSugestoes(max) {
+            document.querySelector('.chat-chips')?.remove();
+            const livres = SUGESTOES.filter(x => !perguntadas.has(x)).slice(0, max || 3);
+            if (!livres.length) return;
+            const box = document.createElement('div'); box.className = 'chat-chips';
+            livres.forEach(q => { const b = document.createElement('button'); b.type = 'button'; b.textContent = q; b.addEventListener('click', () => enviarMsgChat(q)); box.appendChild(b); });
+            document.getElementById('chat-messages').appendChild(box); limitarMensagens();
         }
 
         function escapeHtml(txt) {
             return String(txt).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
         }
+        function formatarTexto(txt) {
+            return escapeHtml(String(txt)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+        }
 
-        async function enviarMsgChat() {
-            const input = document.getElementById('chat-input');
-            const sendBtn = document.getElementById('chat-send');
-            const texto = input.value.trim();
-            if (!texto || sendBtn.disabled) return;
-
-            input.value = '';
-            input.disabled = true;
-            sendBtn.disabled = true;
-
+        async function enviarMsgChat(direto) {
+            const input = document.getElementById('chat-input'), sendBtn = document.getElementById('chat-send');
+            const texto = String(typeof direto === 'string' ? direto : input.value).trim().slice(0, CHAT_MAX_CHARS);
+            if (!texto || chatOcupado) return;
+            chatOcupado = true; input.value = ''; sendBtn.disabled = true;
+            document.querySelector('.chat-chips')?.remove(); perguntadas.add(texto);
             adicionarMsgUser(texto);
-            chatHistorico.push({ role: 'user', content: texto });
-
+            chatHistorico.push({ role: 'user', content: texto }); chatHistorico = chatHistorico.slice(-CHAT_HIST);
             adicionarMsgTyping();
-
-            const resposta = await chamarAPI(chatHistorico, 'chat');
-            chatHistorico.push({ role: 'assistant', content: resposta });
-
-            removerTyping();
-            adicionarMsgBot(resposta);
-
-            input.disabled = false;
-            sendBtn.disabled = false;
-            input.focus();
+            let resposta;
+            try { resposta = await chamarAPI(chatHistorico, 'chat'); } catch (e) { resposta = respostaLocal('chat', chatHistorico); }
+            finally { removerTyping(); }
+            chatHistorico.push({ role: 'assistant', content: resposta }); chatHistorico = chatHistorico.slice(-CHAT_HIST);
+            adicionarMsgBot(resposta); mostrarSugestoes(3);
+            chatOcupado = false; sendBtn.disabled = false; input.focus();
         }
 
-        // ── FORM AI RESPONSE ──
-        let conversaHistorico = [];
-
-        async function gerarRespostaIA(nome, mensagem) {
-            conversaHistorico = [{ role: 'user', content: `O meu nome é ${nome}. A minha ideia de projeto: ${mensagem}` }];
-            const resposta = await chamarAPI(conversaHistorico, 'form');
-            conversaHistorico.push({ role: 'assistant', content: resposta });
-
-            const respostaDiv = document.getElementById('ai-resposta');
-            if (respostaDiv) {
-                respostaDiv.innerHTML = `<p>${formatarTexto(resposta)}</p>`;
-            }
-            const followup = document.getElementById('ai-followup');
-            if (followup) followup.style.display = 'block';
-        }
-
-        async function enviarFollowup() {
-            const input = document.getElementById('followup-input');
-            if (!input) return;
-            const pergunta = input.value.trim();
-            if (!pergunta) return;
-            input.value = '';
-            input.disabled = true;
-
-            const respostaDiv = document.getElementById('ai-resposta');
-            respostaDiv.innerHTML += `
-                <div style="margin-top:14px;padding:10px 14px;background:rgba(37,99,235,0.08);border-radius:10px;font-size:0.88rem;color:var(--azul-escuro);">
-                    <strong>Tu:</strong> ${escapeHtml(pergunta)}
-                </div>
-                <div id="followup-loading" style="margin-top:10px;display:flex;align-items:center;gap:8px;color:var(--texto-mutado);font-size:0.88rem;">
-                    <div class="ai-dots"><span></span><span></span><span></span></div> A pensar…
-                </div>
-            `;
-
-            conversaHistorico.push({ role: 'user', content: pergunta });
-            const resposta = await chamarAPI(conversaHistorico, 'followup');
-            conversaHistorico.push({ role: 'assistant', content: resposta });
-
-            document.getElementById('followup-loading')?.remove();
-            respostaDiv.innerHTML += `
-                <div style="margin-top:10px;padding:10px 14px;background:var(--gelo);border:1px solid var(--borda);border-radius:10px;font-size:0.9rem;line-height:1.65;">
-                    ${formatarTexto(resposta)}
-                </div>`;
-
-            input.disabled = false;
-            input.focus();
-        }
         const bancoDadosModais = {
             conversa: `
                 <h3 id="modal-titulo"><i class="fa-solid fa-comments" style="color:var(--azul-claro);margin-right:10px;"></i>1. Conversa Inicial</h3>
@@ -2616,7 +2564,7 @@
 const WHATSAPP = '244952393828';
 
 // ── MODELOS (edita aqui nomes, preços em Kz, prazos e funcionalidades) ──
-const MODELOS = [{"id": "aurora", "nome": "Aurora", "categoria": "Negócios", "tipo": "Landing Page", "preco": 85000, "prazo": "3 a 5 dias", "badge": "", "desc": "Página única moderna e de alto impacto, ideal para lançar um produto, serviço ou campanha.", "extras": ["Design responsivo", "Formulário de contacto", "Botão WhatsApp", "SEO básico"], "html": "<!doctype html><html lang=\"pt\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>*{box-sizing:border-box;margin:0;padding:0}a{text-decoration:none;color:inherit}ul{list-style:none}html{scroll-behavior:smooth}\nbody{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#070b1a;color:#e2e8f0;overflow-x:hidden}\n.glow{position:absolute;border-radius:50%;filter:blur(100px);opacity:.5;pointer-events:none}\nnav{display:flex;justify-content:space-between;align-items:center;padding:24px 7%;position:relative;z-index:2}\n.logo{font-weight:800;font-size:1.3rem;background:linear-gradient(90deg,#818cf8,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}\nnav ul{display:flex;gap:32px;font-size:.92rem;color:#94a3b8}\n.btn{display:inline-block;background:linear-gradient(90deg,#6366f1,#06b6d4);color:#fff;padding:13px 28px;border-radius:99px;font-weight:600;font-size:.95rem;box-shadow:0 10px 30px rgba(99,102,241,.4)}\n.btn.o{background:transparent;border:1px solid #334155;box-shadow:none;color:#cbd5e1}\n.hero{position:relative;text-align:center;padding:50px 7% 30px}\n.badge{display:inline-block;font-size:.8rem;padding:7px 16px;border-radius:99px;background:rgba(99,102,241,.15);border:1px solid rgba(129,140,248,.35);color:#a5b4fc;margin-bottom:26px}\nh1{font-size:clamp(2.1rem,5.2vw,3.9rem);line-height:1.08;font-weight:800;letter-spacing:-1.8px;max-width:850px;margin:0 auto 22px}\nh1 span{background:linear-gradient(90deg,#818cf8,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}\n.hero p{max-width:580px;margin:0 auto 32px;color:#94a3b8;line-height:1.7;font-size:1.05rem}\n.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}\n.dash{position:relative;max-width:900px;margin:52px auto 0;background:linear-gradient(180deg,#111a35,#0b1226);border:1px solid #1e2a4d;border-radius:20px;padding:22px;box-shadow:0 40px 90px rgba(79,70,229,.25)}\n.dots{display:flex;gap:7px;margin-bottom:18px}.dots i{width:11px;height:11px;border-radius:50%;background:#334155}.dots i:first-child{background:#f87171}.dots i:nth-child(2){background:#fbbf24}.dots i:nth-child(3){background:#34d399}\n.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}\n.st{background:#0e1630;border:1px solid #1e2a4d;border-radius:14px;padding:16px;text-align:left}.st small{color:#64748b;font-size:.75rem}.st b{display:block;font-size:1.5rem;margin-top:4px}.st em{font-style:normal;color:#34d399;font-size:.78rem}\n.chart{display:flex;align-items:flex-end;gap:10px;height:150px;background:#0e1630;border:1px solid #1e2a4d;border-radius:14px;padding:18px}\n.chart i{flex:1;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#22d3ee,#6366f1)}\n.logos{text-align:center;padding:64px 7% 10px;color:#64748b;font-size:.85rem}\n.logos div{display:flex;justify-content:center;gap:44px;flex-wrap:wrap;margin-top:18px;font-weight:800;font-size:1.15rem;color:#334155;letter-spacing:1px}\n.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:70px 7%}\n.f{background:linear-gradient(180deg,#0f1833,#0b1226);border:1px solid #1e2a4d;border-radius:18px;padding:30px}\n.f .ic{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,#6366f1,#06b6d4);display:grid;place-items:center;font-size:1.4rem;margin-bottom:18px}\n.f h3{margin-bottom:8px}.f p{color:#94a3b8;line-height:1.6;font-size:.93rem}\n.band{margin:0 7% 70px;border-radius:24px;padding:60px 30px;text-align:center;background:linear-gradient(135deg,#4f46e5,#0891b2)}\n.band h2{font-size:2rem;margin-bottom:10px}.band p{opacity:.85;margin-bottom:26px}.band .btn{background:#fff;color:#4338ca;box-shadow:none}\nfooter{text-align:center;padding:30px;color:#475569;font-size:.85rem;border-top:1px solid #131c38}\n@media(max-width:760px){nav ul{display:none}.stats,.feat{grid-template-columns:1fr}.chart{height:110px}}\n<\/style><\/head><body>\n<div class=\"glow\" style=\"width:520px;height:520px;background:#4f46e5;top:-160px;left:-120px\"><\/div>\n<div class=\"glow\" style=\"width:460px;height:460px;background:#0891b2;top:60px;right:-140px\"><\/div>\n<nav><a class=\"logo\" href=\"#\">◆ Aurora<\/a><ul><li>Produto<\/li><li>Soluções<\/li><li>Preços<\/li><li>Contacto<\/li><\/ul><a class=\"btn\" href=\"#\">Começar grátis<\/a><\/nav>\n<section class=\"hero\">\n<span class=\"badge\">✨ Novo · Versão 2.0 já disponível<\/span>\n<h1>Faz crescer o teu negócio com <span>inteligência<\/span><\/h1>\n<p>A plataforma tudo-em-um para gerir clientes, vendas e equipa num só lugar. Simples, rápida e feita para crescer contigo.<\/p>\n<div class=\"cta\"><a class=\"btn\" href=\"#\">Experimentar agora<\/a><a class=\"btn o\" href=\"#\">▶ Ver demonstração<\/a><\/div>\n<div class=\"dash\"><div class=\"dots\"><i><\/i><i><\/i><i><\/i><\/div>\n<div class=\"stats\"><div class=\"st\"><small>Receita mensal<\/small><b>2.480.000 Kz<\/b><em>▲ 18,2%<\/em><\/div><div class=\"st\"><small>Novos clientes<\/small><b>1.284<\/b><em>▲ 9,4%<\/em><\/div><div class=\"st\"><small>Conversão<\/small><b>6,8%<\/b><em>▲ 2,1%<\/em><\/div><\/div>\n<div class=\"chart\"><i style=\"height:35%\"><\/i><i style=\"height:52%\"><\/i><i style=\"height:44%\"><\/i><i style=\"height:68%\"><\/i><i style=\"height:58%\"><\/i><i style=\"height:82%\"><\/i><i style=\"height:74%\"><\/i><i style=\"height:95%\"><\/i><\/div><\/div>\n<\/section>\n<section class=\"logos\">Confiado por mais de 2.500 empresas<div><span>NOVATEC<\/span><span>KWANZA+<\/span><span>LUANDA·IO<\/span><span>ATLAS<\/span><span>ZENITH<\/span><\/div><\/section>\n<section class=\"feat\">\n<div class=\"f\"><div class=\"ic\">⚡<\/div><h3>Rápido de verdade<\/h3><p>Carrega em milissegundos e funciona perfeitamente em qualquer telemóvel ou computador.<\/p><\/div>\n<div class=\"f\"><div class=\"ic\">🔒<\/div><h3>Seguro por defeito<\/h3><p>Os teus dados protegidos com encriptação e cópias de segurança automáticas todos os dias.<\/p><\/div>\n<div class=\"f\"><div class=\"ic\">📈<\/div><h3>Relatórios claros<\/h3><p>Painéis simples que mostram o que está a funcionar e onde podes vender mais.<\/p><\/div>\n<\/section>\n<section class=\"band\"><h2>Pronto para acelerar?<\/h2><p>Começa hoje. Sem cartão, sem compromisso.<\/p><a class=\"btn\" href=\"#\">Criar conta grátis<\/a><\/section>\n<footer>© 2026 Aurora Technologies · Todos os direitos reservados<\/footer>\n<\/body><\/html>"}, {"id": "meridian", "nome": "Meridian Corporate", "categoria": "Negócios", "tipo": "Site Institucional", "preco": 180000, "prazo": "7 a 10 dias", "badge": "Popular", "desc": "Site profissional multi-secção para empresas que querem transmitir confiança e credibilidade.", "extras": ["Até 6 páginas", "Secção de serviços", "Formulário de propostas", "Google Maps"], "html": "<!doctype html><html lang=\"pt\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>*{box-sizing:border-box;margin:0;padding:0}a{text-decoration:none;color:inherit}ul{list-style:none}html{scroll-behavior:smooth}\nbody{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;color:#1e293b;background:#fff;overflow-x:hidden}\n.top{background:#0b1f3a;color:#cbd5e1;font-size:.78rem;padding:9px 7%;display:flex;justify-content:space-between}\nnav{display:flex;justify-content:space-between;align-items:center;padding:20px 7%;border-bottom:1px solid #e2e8f0}\n.logo{font-weight:800;font-size:1.3rem;color:#0b1f3a;letter-spacing:-.5px}.logo b{color:#c9a227}\nnav ul{display:flex;gap:30px;font-size:.92rem;color:#475569;font-weight:500}\n.btn{display:inline-block;background:#0b1f3a;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;font-size:.92rem}\n.btn.g{background:#c9a227;color:#0b1f3a}.btn.o{background:transparent;color:#0b1f3a;border:2px solid #0b1f3a}\n.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center;padding:70px 7%;background:linear-gradient(180deg,#f8fafc,#fff)}\n.tag{color:#c9a227;font-weight:700;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}\nh1{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.1;color:#0b1f3a;font-weight:800;letter-spacing:-1.5px;margin-bottom:20px}\n.hero p{color:#64748b;line-height:1.75;font-size:1.05rem;margin-bottom:30px;max-width:520px}\n.btns{display:flex;gap:14px;flex-wrap:wrap}\n.vis{position:relative;height:400px}\n.b1{position:absolute;inset:0 0 40px 40px;border-radius:24px;background:linear-gradient(135deg,#0b1f3a,#1d4ed8)}\n.b1::after{content:\"🏢\";position:absolute;inset:0;display:grid;place-items:center;font-size:8rem;opacity:.9}\n.b2{position:absolute;left:0;bottom:0;background:#fff;border-radius:16px;padding:20px 26px;box-shadow:0 20px 50px rgba(15,23,42,.18);border-left:5px solid #c9a227}\n.b2 b{display:block;font-size:2rem;color:#0b1f3a}.b2 small{color:#64748b}\n.nums{display:grid;grid-template-columns:repeat(4,1fr);background:#0b1f3a;color:#fff;padding:44px 7%;text-align:center;gap:20px}\n.nums b{display:block;font-size:2.3rem;color:#c9a227}.nums small{opacity:.75}\n.sv{padding:80px 7%}.sv h2{font-size:2rem;color:#0b1f3a;text-align:center;margin-bottom:8px}.sv>p{text-align:center;color:#64748b;margin-bottom:46px}\n.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}\n.c{border:1px solid #e2e8f0;border-radius:16px;padding:32px;background:#fff;transition:.3s}\n.c:hover{box-shadow:0 20px 40px rgba(15,23,42,.08);transform:translateY(-4px)}\n.c i{font-style:normal;color:#c9a227;font-weight:800;font-size:1.6rem}.c h3{margin:12px 0 8px;color:#0b1f3a}.c p{color:#64748b;line-height:1.65;font-size:.93rem}\n.band{margin:0 7% 70px;background:linear-gradient(135deg,#0b1f3a,#1e40af);color:#fff;border-radius:22px;padding:54px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}\n.band h2{font-size:1.7rem;margin-bottom:6px}.band p{opacity:.8}\nfooter{background:#08152a;color:#94a3b8;padding:36px 7%;display:flex;justify-content:space-between;font-size:.85rem;flex-wrap:wrap;gap:10px}\n@media(max-width:800px){.hero,.grid{grid-template-columns:1fr}.nums{grid-template-columns:1fr 1fr}nav ul{display:none}.vis{height:300px}.top{display:none}}\n<\/style><\/head><body>\n<div class=\"top\"><span>📞 +244 900 000 000 &nbsp;·&nbsp; ✉ geral@meridian.co.ao<\/span><span>Luanda, Angola<\/span><\/div>\n<nav><a class=\"logo\" href=\"#\">Meridian<b>.<\/b>Group<\/a><ul><li>Início<\/li><li>Empresa<\/li><li>Serviços<\/li><li>Projetos<\/li><li>Contacto<\/li><\/ul><a class=\"btn\" href=\"#\">Fale connosco<\/a><\/nav>\n<section class=\"hero\"><div><div class=\"tag\">Consultoria &amp; Gestão<\/div><h1>Soluções empresariais que constroem o amanhã<\/h1><p>Mais de 25 anos a apoiar empresas angolanas a crescer com estratégia, tecnologia e resultados mensuráveis.<\/p><div class=\"btns\"><a class=\"btn g\" href=\"#\">Pedir proposta<\/a><a class=\"btn o\" href=\"#\">Os nossos serviços<\/a><\/div><\/div>\n<div class=\"vis\"><div class=\"b1\"><\/div><div class=\"b2\"><b>25+<\/b><small>Anos de experiência<\/small><\/div><\/div><\/section>\n<section class=\"nums\"><div><b>350+<\/b><small>Projetos concluídos<\/small><\/div><div><b>120<\/b><small>Clientes ativos<\/small><\/div><div><b>45<\/b><small>Especialistas<\/small><\/div><div><b>98%<\/b><small>Clientes satisfeitos<\/small><\/div><\/section>\n<section class=\"sv\"><h2>O que fazemos<\/h2><p>Serviços desenhados para o crescimento sustentável do teu negócio.<\/p>\n<div class=\"grid\"><div class=\"c\"><i>01<\/i><h3>Consultoria estratégica<\/h3><p>Diagnóstico, planeamento e acompanhamento para tomar decisões com confiança.<\/p><\/div><div class=\"c\"><i>02<\/i><h3>Transformação digital<\/h3><p>Modernizamos processos e sistemas para ganhares tempo e eficiência.<\/p><\/div><div class=\"c\"><i>03<\/i><h3>Gestão financeira<\/h3><p>Controlo de custos, reporting e apoio ao investimento com total transparência.<\/p><\/div><\/div><\/section>\n<section class=\"band\"><div><h2>Vamos falar do teu projeto?<\/h2><p>Agenda uma reunião gratuita de 30 minutos.<\/p><\/div><a class=\"btn g\" href=\"#\">Agendar reunião<\/a><\/section>\n<footer><span>© 2026 Meridian Group, Lda.<\/span><span>Política de Privacidade · Termos<\/span><\/footer>\n<\/body><\/html>"}, {"id": "mercato", "nome": "Mercato", "categoria": "Loja online", "tipo": "E-commerce", "preco": 350000, "prazo": "12 a 15 dias", "badge": "Mais completo", "desc": "Loja online com catálogo, carrinho e checkout. Preços em Kwanzas e pagamento na entrega.", "extras": ["Catálogo até 100 produtos", "Carrinho e checkout", "Painel de encomendas", "Pesquisa e filtros"], "html": "<!doctype html><html lang=\"pt\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>*{box-sizing:border-box;margin:0;padding:0}a{text-decoration:none;color:inherit}ul{list-style:none}html{scroll-behavior:smooth}\nbody{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#fafafa;color:#111;overflow-x:hidden}\n.strip{background:#111;color:#fff;text-align:center;font-size:.78rem;padding:9px;letter-spacing:.3px}\nheader{display:flex;align-items:center;gap:30px;padding:18px 5%;background:#fff;border-bottom:1px solid #eee}\n.logo{font-weight:900;font-size:1.5rem;letter-spacing:-1px}.logo b{color:#f97316}\n.search{flex:1;max-width:520px;background:#f4f4f5;border-radius:99px;padding:12px 20px;color:#a1a1aa;font-size:.9rem}\n.ic{margin-left:auto;display:flex;gap:22px;font-size:1.2rem}.ic span{position:relative}.ic sup{position:absolute;top:-8px;right:-10px;background:#f97316;color:#fff;font-size:.6rem;border-radius:99px;padding:2px 6px;font-weight:700}\n.chips{display:flex;gap:10px;padding:16px 5%;background:#fff;overflow:auto}.chips span{white-space:nowrap;padding:8px 18px;border-radius:99px;background:#f4f4f5;font-size:.85rem;font-weight:600}.chips span:first-child{background:#111;color:#fff}\n.banner{margin:22px 5%;border-radius:26px;background:linear-gradient(120deg,#f97316,#ef4444 60%,#be123c);color:#fff;padding:54px 6%;display:flex;justify-content:space-between;align-items:center;overflow:hidden;position:relative}\n.banner small{letter-spacing:2px;font-weight:700;opacity:.9}.banner h1{font-size:clamp(2rem,4.6vw,3.6rem);line-height:1.05;margin:10px 0 18px;letter-spacing:-1.5px;font-weight:900}\n.banner a{display:inline-block;background:#fff;color:#111;padding:13px 28px;border-radius:99px;font-weight:700;font-size:.92rem}\n.banner .big{font-size:10rem;filter:drop-shadow(0 20px 30px rgba(0,0,0,.3));transform:rotate(-12deg)}\nh2{padding:26px 5% 6px;font-size:1.5rem;letter-spacing:-.5px}\n.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:14px 5% 50px}\n.p{background:#fff;border-radius:18px;padding:12px;border:1px solid #eee;transition:.3s}.p:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(0,0,0,.09)}\n.p .im{aspect-ratio:1;border-radius:12px;display:grid;place-items:center;font-size:4.2rem;position:relative}\n.p .off{position:absolute;top:10px;left:10px;background:#111;color:#fff;font-size:.68rem;padding:4px 10px;border-radius:99px;font-weight:700}\n.p h3{font-size:.95rem;margin:12px 4px 3px}.p .r{font-size:.75rem;color:#f59e0b;margin:0 4px}\n.p .row{display:flex;justify-content:space-between;align-items:center;margin:8px 4px 4px}.p b{font-size:1.02rem}.p button{border:0;background:#111;color:#fff;border-radius:99px;padding:8px 14px;font-size:.78rem;font-weight:600}\n.news{margin:0 5% 50px;background:#111;color:#fff;border-radius:24px;padding:46px;text-align:center}.news h2{padding:0 0 8px;font-size:1.6rem}.news p{color:#a1a1aa;margin-bottom:20px}\n.news div{display:inline-flex;background:#27272a;border-radius:99px;padding:6px;gap:10px}.news span{padding:8px 22px;color:#a1a1aa;font-size:.9rem}.news a{background:#f97316;border-radius:99px;padding:10px 24px;font-weight:700;font-size:.9rem}\nfooter{text-align:center;padding:26px;color:#71717a;font-size:.82rem;border-top:1px solid #eee}\n@media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.banner .big{display:none}.search{display:none}}\n<\/style><\/head><body>\n<div class=\"strip\">🚚 Entrega grátis em compras acima de 50.000 Kz · Pagamento na entrega disponível<\/div>\n<header><a class=\"logo\" href=\"#\">Mercato<b>.<\/b><\/a><div class=\"search\">🔍 Pesquisar produtos, marcas…<\/div><div class=\"ic\"><span>♡<\/span><span>👤<\/span><span>🛒<sup>2<\/sup><\/span><\/div><\/header>\n<div class=\"chips\"><span>Tudo<\/span><span>Calçado<\/span><span>Eletrónica<\/span><span>Acessórios<\/span><span>Casa<\/span><span>Moda<\/span><span>Promoções 🔥<\/span><\/div>\n<section class=\"banner\"><div><small>COLEÇÃO 2026<\/small><h1>Estilo novo,<br>preços a -30%<\/h1><a href=\"#\">Comprar agora →<\/a><\/div><div class=\"big\">👟<\/div><\/section>\n<h2>Mais vendidos<\/h2>\n<section class=\"grid\">\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#fed7aa,#fdba74)\">👟<span class=\"off\">-30%<\/span><\/div><h3>Sneakers Urban Air<\/h3><div class=\"r\">★★★★★ (128)<\/div><div class=\"row\"><b>45.000 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#bfdbfe,#93c5fd)\">🎧<\/div><h3>Headphones Pro X<\/h3><div class=\"r\">★★★★☆ (86)<\/div><div class=\"row\"><b>32.500 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#ddd6fe,#c4b5fd)\">⌚<span class=\"off\">Novo<\/span><\/div><h3>Smartwatch Fit S2<\/h3><div class=\"r\">★★★★★ (203)<\/div><div class=\"row\"><b>89.900 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#fecdd3,#fda4af)\">👜<\/div><h3>Mala Couro Elegance<\/h3><div class=\"r\">★★★★☆ (54)<\/div><div class=\"row\"><b>27.000 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#bbf7d0,#86efac)\">📱<span class=\"off\">-15%<\/span><\/div><h3>Smartphone Nova 12<\/h3><div class=\"r\">★★★★★ (311)<\/div><div class=\"row\"><b>210.000 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#fef08a,#fde047)\">🕶️<\/div><h3>Óculos Solar Riviera<\/h3><div class=\"r\">★★★★☆ (77)<\/div><div class=\"row\"><b>15.500 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#a5f3fc,#67e8f9)\">🎒<\/div><h3>Mochila Trek 30L<\/h3><div class=\"r\">★★★★★ (92)<\/div><div class=\"row\"><b>24.900 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<div class=\"p\"><div class=\"im\" style=\"background:linear-gradient(135deg,#e5e7eb,#d1d5db)\">💻<\/div><h3>Portátil Slim 14\"<\/h3><div class=\"r\">★★★★★ (65)<\/div><div class=\"row\"><b>480.000 Kz<\/b><button>+ Carrinho<\/button><\/div><\/div>\n<\/section>\n<section class=\"news\"><h2>Recebe 10% no primeiro pedido<\/h2><p>Subscreve e fica a par das novidades e promoções.<\/p><div><span>o-teu@email.com<\/span><a href=\"#\">Subscrever<\/a><\/div><\/section>\n<footer>© 2026 Mercato · Loja Online · Luanda, Angola<\/footer>\n<\/body><\/html>"}, {"id": "sabor", "nome": "Sabor & Brasa", "categoria": "Restauração", "tipo": "Restaurante", "preco": 150000, "prazo": "5 a 7 dias", "badge": "", "desc": "Menu digital elegante, reservas online e localização, feito para restaurantes e cafés.", "extras": ["Menu com preços", "Pedido de reservas", "Galeria de pratos", "Horários e mapa"], "html": "<!doctype html><html lang=\"pt\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>*{box-sizing:border-box;margin:0;padding:0}a{text-decoration:none;color:inherit}ul{list-style:none}html{scroll-behavior:smooth}\nbody{font-family:Georgia,'Times New Roman',serif;background:#14100d;color:#f5ead9;overflow-x:hidden}\nnav{display:flex;justify-content:space-between;align-items:center;padding:26px 7%;font-family:system-ui,sans-serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;color:#c9b79c}\n.logo{font-family:Georgia,serif;font-size:1.5rem;letter-spacing:1px;text-transform:none;color:#f59e0b;font-weight:700;font-style:italic}\nnav ul{display:flex;gap:34px}\n.hero{position:relative;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:30px;padding:50px 7% 70px;overflow:hidden}\n.hero::before{content:\"\";position:absolute;width:600px;height:600px;right:-120px;top:-100px;background:radial-gradient(circle,rgba(245,158,11,.28),transparent 65%)}\n.k{font-family:system-ui,sans-serif;color:#f59e0b;letter-spacing:4px;font-size:.78rem;text-transform:uppercase;margin-bottom:18px}\nh1{font-size:clamp(2.4rem,5.4vw,4.4rem);line-height:1.02;font-weight:400;letter-spacing:-1.5px;margin-bottom:22px}h1 em{color:#f59e0b}\n.hero p{font-family:system-ui,sans-serif;color:#b5a48a;line-height:1.75;max-width:470px;margin-bottom:32px}\n.btn{display:inline-block;font-family:system-ui,sans-serif;background:#f59e0b;color:#14100d;padding:15px 34px;border-radius:4px;font-weight:700;letter-spacing:1px;font-size:.82rem;text-transform:uppercase}\n.btn.o{background:transparent;border:1px solid #6b5a43;color:#f5ead9;margin-left:12px}\n.plate{position:relative;width:min(100%,420px);aspect-ratio:1;margin:auto;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3a2c1e,#1d1610 70%);border:1px solid #3a2c1e;display:grid;place-items:center;font-size:9rem;box-shadow:0 40px 80px rgba(0,0,0,.6),inset 0 0 0 16px #1a130d}\n.plate small{position:absolute;bottom:-14px;right:-6px;background:#f59e0b;color:#14100d;font-family:system-ui,sans-serif;font-weight:800;font-size:.8rem;padding:10px 18px;border-radius:99px}\n.menu{padding:70px 7%;background:#1a140f}.menu h2{text-align:center;font-size:2.3rem;font-weight:400;margin-bottom:8px}.menu .s{text-align:center;color:#b5a48a;font-family:system-ui,sans-serif;margin-bottom:48px}\n.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px 70px;max-width:980px;margin:auto}\n.d{padding:14px 0}.d .t{display:flex;align-items:baseline;gap:10px;font-size:1.15rem}.d .t i{flex:1;border-bottom:1px dotted #6b5a43}.d .t b{color:#f59e0b;font-weight:400}\n.d p{font-family:system-ui,sans-serif;font-size:.85rem;color:#8f7f68;margin-top:4px}\n.info{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:60px 7%;font-family:system-ui,sans-serif;text-align:center}\n.info div{border:1px solid #33271b;border-radius:14px;padding:30px}.info b{display:block;color:#f59e0b;margin:10px 0 6px;font-family:Georgia,serif;font-size:1.15rem;font-weight:400}.info span{color:#b5a48a;font-size:.9rem;line-height:1.6}\n.res{margin:0 7% 60px;padding:56px;border-radius:20px;background:linear-gradient(120deg,#f59e0b,#d97706);color:#14100d;text-align:center}\n.res h2{font-weight:400;font-size:2rem;margin-bottom:8px}.res p{font-family:system-ui,sans-serif;margin-bottom:22px;opacity:.8}.res .btn{background:#14100d;color:#f59e0b}\nfooter{text-align:center;padding:28px;color:#6b5a43;font-family:system-ui,sans-serif;font-size:.82rem;border-top:1px solid #241b13}\n@media(max-width:800px){.hero,.cols,.info{grid-template-columns:1fr}nav ul{display:none}.plate{font-size:6rem}}\n<\/style><\/head><body>\n<nav><a class=\"logo\" href=\"#\">Sabor &amp; Brasa<\/a><ul><li>Menu<\/li><li>Sobre<\/li><li>Reservas<\/li><li>Contacto<\/li><\/ul><\/nav>\n<section class=\"hero\"><div><div class=\"k\">Cozinha angolana · Luanda<\/div><h1>A tradição<br>à tua <em>mesa<\/em><\/h1><p>Receitas de família, ingredientes frescos e o sabor autêntico de Angola preparado na brasa. Uma experiência para partilhar.<\/p><a class=\"btn\" href=\"#\">Reservar mesa<\/a><a class=\"btn o\" href=\"#\">Ver menu<\/a><\/div>\n<div class=\"plate\">🍲<small>Prato do dia · 6.500 Kz<\/small><\/div><\/section>\n<section class=\"menu\"><h2>O nosso menu<\/h2><div class=\"s\">Pratos preparados diariamente com carinho<\/div>\n<div class=\"cols\">\n<div class=\"d\"><div class=\"t\">Muamba de Galinha<i><\/i><b>6.500 Kz<\/b><\/div><p>Com óleo de palma, quiabos e funge de milho<\/p><\/div>\n<div class=\"d\"><div class=\"t\">Calulu de Peixe<i><\/i><b>7.200 Kz<\/b><\/div><p>Peixe seco e fresco, legumes e feijão de óleo de palma<\/p><\/div>\n<div class=\"d\"><div class=\"t\">Mufete de Peixe Grelhado<i><\/i><b>8.900 Kz<\/b><\/div><p>Feijão-de-óleo, banana-pão, mandioca e cebola<\/p><\/div>\n<div class=\"d\"><div class=\"t\">Churrasco Misto<i><\/i><b>12.000 Kz<\/b><\/div><p>Frango, costeleta e chouriço na brasa com batata<\/p><\/div>\n<div class=\"d\"><div class=\"t\">Cocktail de Gambas<i><\/i><b>9.500 Kz<\/b><\/div><p>Gambas frescas, molho rosé e limão<\/p><\/div>\n<div class=\"d\"><div class=\"t\">Gelado de Maracujá<i><\/i><b>2.800 Kz<\/b><\/div><p>Sobremesa artesanal da casa<\/p><\/div>\n<\/div><\/section>\n<section class=\"info\"><div>📍<b>Onde estamos<\/b><span>Ilha de Luanda<br>Rua da Marginal, 25<\/span><\/div><div>🕒<b>Horário<\/b><span>Ter–Dom · 12h–23h<br>Segunda: fechado<\/span><\/div><div>📞<b>Reservas<\/b><span>+244 900 000 000<br>reservas@saborebrasa.ao<\/span><\/div><\/section>\n<section class=\"res\"><h2>Reserva a tua mesa<\/h2><p>Aniversários, jantares de empresa e eventos privados.<\/p><a class=\"btn\" href=\"#\">Fazer reserva<\/a><\/section>\n<footer>© 2026 Sabor &amp; Brasa · Feito com paixão em Luanda<\/footer>\n<\/body><\/html>"}, {"id": "lumen", "nome": "Lumen Portfólio", "categoria": "Portfólio", "tipo": "Portfólio Criativo", "preco": 95000, "prazo": "4 a 6 dias", "badge": "", "desc": "Portfólio minimalista e cheio de personalidade para designers, fotógrafos e freelancers.", "extras": ["Galeria de projetos", "Página sobre mim", "Animações suaves", "Contacto direto"], "html": "<!doctype html><html lang=\"pt\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>*{box-sizing:border-box;margin:0;padding:0}a{text-decoration:none;color:inherit}ul{list-style:none}html{scroll-behavior:smooth}\nbody{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:#faf7f2;color:#151515;overflow-x:hidden}\nnav{display:flex;justify-content:space-between;align-items:center;padding:28px 6%;font-size:.92rem;font-weight:500}\n.logo{font-weight:800;font-size:1.2rem;letter-spacing:-.5px}.logo b{color:#ff5b3a}\nnav ul{display:flex;gap:34px}.pill{border:1.5px solid #151515;padding:10px 22px;border-radius:99px;font-weight:600}\n.hero{padding:70px 6% 50px}\n.hi{display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid #eadfce;border-radius:99px;padding:8px 18px 8px 8px;font-size:.85rem;margin-bottom:28px}.hi i{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#ff5b3a,#ffb199);display:block}\nh1{font-size:clamp(2.4rem,7vw,6rem);line-height:.98;letter-spacing:-3px;font-weight:800;max-width:1000px}\nh1 span{color:#ff5b3a}h1 em{font-style:normal;-webkit-text-stroke:2px #151515;color:transparent}\n.hero p{margin-top:26px;color:#5b5b5b;max-width:520px;line-height:1.7;font-size:1.05rem}\n.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:20px 6% 60px}\n.w{border-radius:22px;aspect-ratio:1.15;padding:22px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:.35s}\n.w:hover{transform:translateY(-6px) rotate(-.6deg)}\n.w small{font-weight:700;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.8}.w h3{font-size:1.35rem;letter-spacing:-.5px}\n.w .sh{position:absolute;right:-30px;top:20px;width:170px;height:170px;border-radius:50%;opacity:.5}\n.about{display:grid;grid-template-columns:1fr 1fr;gap:50px;padding:50px 6% 70px;align-items:center}\n.about h2{font-size:2.4rem;letter-spacing:-1.5px;line-height:1.1}.about p{color:#5b5b5b;line-height:1.75;margin:16px 0 22px}\n.tags{display:flex;flex-wrap:wrap;gap:10px}.tags span{border:1.5px solid #151515;border-radius:99px;padding:8px 18px;font-size:.85rem;font-weight:600}\n.ph{aspect-ratio:1.1;border-radius:26px;background:linear-gradient(135deg,#ff5b3a,#ffb199 60%,#ffe3d6);display:grid;place-items:center;font-size:7rem}\n.big{margin:0 6% 50px;background:#151515;color:#fff;border-radius:30px;padding:70px 40px;text-align:center}\n.big h2{font-size:clamp(2rem,5vw,3.6rem);letter-spacing:-2px;line-height:1.05}.big h2 span{color:#ff5b3a}.big p{color:#a3a3a3;margin:14px 0 28px}.big a{display:inline-block;background:#ff5b3a;color:#fff;padding:15px 34px;border-radius:99px;font-weight:700}\nfooter{display:flex;justify-content:space-between;padding:26px 6%;color:#777;font-size:.85rem;border-top:1px solid #eadfce}\n@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.about{grid-template-columns:1fr}nav ul{display:none}}\n<\/style><\/head><body>\n<nav><a class=\"logo\" href=\"#\">ana<b>.<\/b>costa<\/a><ul><li>Trabalhos<\/li><li>Sobre<\/li><li>Serviços<\/li><\/ul><a class=\"pill\" href=\"#\">Contactar<\/a><\/nav>\n<section class=\"hero\"><div class=\"hi\"><i><\/i>Disponível para novos projetos<\/div><h1>Design que <span>conta<\/span> histórias, <em>imagens<\/em> que ficam.<\/h1><p>Sou designer gráfica e fotógrafa em Luanda. Ajudo marcas e pessoas a comunicar com identidade, emoção e clareza.<\/p><\/section>\n<section class=\"grid\">\n<div class=\"w\" style=\"background:#ffd9cc\"><div class=\"sh\" style=\"background:#ff5b3a\"><\/div><small>Branding<\/small><h3>Café Kalunga<\/h3><\/div>\n<div class=\"w\" style=\"background:#d7e8ff\"><div class=\"sh\" style=\"background:#3b82f6\"><\/div><small>Fotografia<\/small><h3>Retratos de Rua<\/h3><\/div>\n<div class=\"w\" style=\"background:#e4f5d0\"><div class=\"sh\" style=\"background:#65a30d\"><\/div><small>Web design<\/small><h3>Eco Angola<\/h3><\/div>\n<div class=\"w\" style=\"background:#fdeaa8\"><div class=\"sh\" style=\"background:#f59e0b\"><\/div><small>Packaging<\/small><h3>Mel do Huambo<\/h3><\/div>\n<div class=\"w\" style=\"background:#e8dcff\"><div class=\"sh\" style=\"background:#7c3aed\"><\/div><small>Editorial<\/small><h3>Revista Sentido<\/h3><\/div>\n<div class=\"w\" style=\"background:#ffd0e0\"><div class=\"sh\" style=\"background:#ec4899\"><\/div><small>Campanha<\/small><h3>Moda Luanda '26<\/h3><\/div>\n<\/section>\n<section class=\"about\"><div class=\"ph\">🎨<\/div><div><h2>Olá, sou a Ana 👋<\/h2><p>Há 8 anos que transformo ideias em identidades visuais e fotografias memoráveis. Trabalho de perto com cada cliente para criar algo único.<\/p><div class=\"tags\"><span>Branding<\/span><span>UI Design<\/span><span>Fotografia<\/span><span>Ilustração<\/span><\/div><\/div><\/section>\n<section class=\"big\"><h2>Vamos criar algo <span>incrível<\/span> juntos?<\/h2><p>ana@anacosta.design<\/p><a href=\"#\">Enviar mensagem →<\/a><\/section>\n<footer><span>© 2026 Ana Costa<\/span><span>Instagram · Behance · LinkedIn<\/span><\/footer>\n<\/body><\/html>"}, {"id": "vida", "nome": "Vida+ Saúde", "categoria": "Saúde", "tipo": "Clínica / Consultório", "preco": 220000, "prazo": "8 a 12 dias", "badge": "Novo", "desc": "Site acolhedor para clínicas e consultórios, com marcação de consultas e equipa médica.", "extras": ["Marcação de consultas", "Perfil dos médicos", "Especialidades", "Contacto de urgência"], "html": "<!doctype html><html lang=\"pt\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>*{box-sizing:border-box;margin:0;padding:0}a{text-decoration:none;color:inherit}ul{list-style:none}html{scroll-behavior:smooth}\nbody{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;background:#f0fdfa;color:#134e4a;overflow-x:hidden}\nnav{display:flex;justify-content:space-between;align-items:center;padding:20px 7%;background:#fff;box-shadow:0 2px 20px rgba(13,148,136,.08)}\n.logo{font-weight:800;font-size:1.4rem;color:#0d9488}.logo b{color:#f43f5e}\nnav ul{display:flex;gap:30px;font-size:.92rem;color:#475569;font-weight:500}\n.btn{display:inline-block;background:#0d9488;color:#fff;padding:13px 26px;border-radius:12px;font-weight:600;font-size:.92rem;box-shadow:0 8px 20px rgba(13,148,136,.3)}\n.btn.o{background:#fff;color:#0d9488;box-shadow:none;border:2px solid #99f6e4}\n.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:60px 7% 70px;background:linear-gradient(135deg,#ccfbf1,#f0fdfa 55%,#ecfeff)}\n.tag{display:inline-block;background:#fff;color:#0d9488;padding:7px 16px;border-radius:99px;font-size:.8rem;font-weight:700;margin-bottom:20px;box-shadow:0 4px 14px rgba(13,148,136,.12)}\nh1{font-size:clamp(2rem,4.6vw,3.5rem);line-height:1.1;letter-spacing:-1.5px;color:#0f3d3a;font-weight:800;margin-bottom:18px}h1 span{color:#0d9488}\n.hero p{color:#4b6b68;line-height:1.75;max-width:500px;margin-bottom:28px}\n.btns{display:flex;gap:14px;flex-wrap:wrap}\n.card{background:#fff;border-radius:24px;padding:30px;box-shadow:0 30px 70px rgba(13,148,136,.18)}\n.card h3{margin-bottom:18px;font-size:1.15rem}\n.f{background:#f0fdfa;border:1px solid #ccfbf1;border-radius:12px;padding:13px 16px;margin-bottom:12px;font-size:.9rem;color:#4b6b68;display:flex;justify-content:space-between}\n.card .btn{display:block;text-align:center;margin-top:8px}\n.sv{padding:70px 7%;text-align:center}.sv h2{font-size:2rem;margin-bottom:8px}.sv>p{color:#4b6b68;margin-bottom:40px}\n.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}\n.s{background:#fff;border-radius:20px;padding:30px 20px;border:1px solid #ccfbf1;transition:.3s}.s:hover{transform:translateY(-5px);box-shadow:0 18px 36px rgba(13,148,136,.14)}\n.s i{font-style:normal;width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,#99f6e4,#5eead4);display:grid;place-items:center;font-size:1.8rem;margin:0 auto 14px}.s b{display:block;margin-bottom:5px}.s span{font-size:.85rem;color:#4b6b68}\n.doc{padding:20px 7% 70px;text-align:center}.doc h2{font-size:2rem;margin-bottom:34px}\n.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}\n.d{background:#fff;border-radius:22px;padding:28px;border:1px solid #ccfbf1}.d .av{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#5eead4,#0d9488);display:grid;place-items:center;font-size:3rem;margin:0 auto 14px}.d b{display:block}.d span{color:#0d9488;font-size:.85rem;font-weight:600}\n.emg{margin:0 7% 60px;background:linear-gradient(120deg,#0d9488,#0f766e);color:#fff;border-radius:24px;padding:44px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}\n.emg h2{font-size:1.7rem}.emg p{opacity:.85;margin-top:4px}.emg .btn{background:#fff;color:#0f766e;box-shadow:none}\nfooter{text-align:center;padding:26px;color:#5b807c;font-size:.85rem;border-top:1px solid #ccfbf1}\n@media(max-width:820px){.hero,.g3{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}nav ul{display:none}}\n<\/style><\/head><body>\n<nav><a class=\"logo\" href=\"#\">Vida<b>+<\/b><\/a><ul><li>Início<\/li><li>Especialidades<\/li><li>Médicos<\/li><li>Contacto<\/li><\/ul><a class=\"btn\" href=\"#\">Marcar consulta<\/a><\/nav>\n<section class=\"hero\"><div><span class=\"tag\">🩺 Clínica multidisciplinar · Luanda<\/span><h1>A tua saúde em <span>boas mãos<\/span><\/h1><p>Cuidado humano, tecnologia moderna e uma equipa de especialistas dedicada ao bem-estar de toda a família.<\/p><div class=\"btns\"><a class=\"btn\" href=\"#\">Marcar consulta<\/a><a class=\"btn o\" href=\"#\">Ver especialidades<\/a><\/div><\/div>\n<div class=\"card\"><h3>📅 Agendamento rápido<\/h3><div class=\"f\"><span>Especialidade<\/span><b>Clínica Geral ▾<\/b><\/div><div class=\"f\"><span>Data<\/span><b>Amanhã, 09:30 ▾<\/b><\/div><div class=\"f\"><span>Nome<\/span><b>O teu nome<\/b><\/div><a class=\"btn\" href=\"#\">Confirmar marcação<\/a><\/div><\/section>\n<section class=\"sv\"><h2>As nossas especialidades<\/h2><p>Tudo num só lugar, com atendimento rápido e personalizado.<\/p>\n<div class=\"g4\"><div class=\"s\"><i>🩺<\/i><b>Clínica Geral<\/b><span>Consultas e check-ups completos<\/span><\/div><div class=\"s\"><i>🦷<\/i><b>Odontologia<\/b><span>Sorrisos saudáveis para todos<\/span><\/div><div class=\"s\"><i>👁️<\/i><b>Oftalmologia<\/b><span>Cuidamos da tua visão<\/span><\/div><div class=\"s\"><i>👶<\/i><b>Pediatria<\/b><span>Acompanhamento infantil<\/span><\/div><\/div><\/section>\n<section class=\"doc\"><h2>Conhece a nossa equipa<\/h2><div class=\"g3\">\n<div class=\"d\"><div class=\"av\">👩‍⚕️<\/div><b>Dra. Helena Fortes<\/b><span>Clínica Geral<\/span><\/div>\n<div class=\"d\"><div class=\"av\">👨‍⚕️<\/div><b>Dr. Miguel Santos<\/b><span>Cardiologia<\/span><\/div>\n<div class=\"d\"><div class=\"av\">👩‍⚕️<\/div><b>Dra. Luísa Neto<\/b><span>Pediatria<\/span><\/div><\/div><\/section>\n<section class=\"emg\"><div><h2>Urgência 24 horas<\/h2><p>Atendimento de emergência todos os dias do ano.<\/p><\/div><a class=\"btn\" href=\"#\">📞 +244 900 000 000<\/a><\/section>\n<footer>© 2026 Clínica Vida+ · Luanda, Angola<\/footer>\n<\/body><\/html>"}];
+const MODELOS = [{"id": "aurora", "nome": "Aurora", "categoria": "Negócios", "tipo": "Landing Page", "preco": 85000, "prazo": "3 a 5 dias", "badge": "", "desc": "Página única moderna e de alto impacto, ideal para lançar um produto, serviço ou campanha.", "extras": ["Design responsivo", "Formulário de contacto", "Botão WhatsApp", "SEO básico"]}, {"id": "meridian", "nome": "Meridian Corporate", "categoria": "Negócios", "tipo": "Site Institucional", "preco": 180000, "prazo": "7 a 10 dias", "badge": "Popular", "desc": "Site institucional editorial com áreas de atuação, equipa e formulário de contacto.", "extras": ["Até 6 páginas", "Áreas de atuação e equipa", "Formulário de propostas", "Google Maps"]}, {"id": "mercato", "nome": "Mercato", "categoria": "Loja online", "tipo": "E-commerce", "preco": 350000, "prazo": "12 a 15 dias", "badge": "Mais completo", "desc": "Loja online com catálogo filtrável, carrinho em tempo real e pagamento na entrega.", "extras": ["Catálogo até 100 produtos", "Carrinho e checkout", "Painel de encomendas", "Pesquisa e filtros"]}, {"id": "sabor", "nome": "Sabor & Brasa", "categoria": "Restauração", "tipo": "Restaurante", "preco": 150000, "prazo": "5 a 7 dias", "badge": "", "desc": "Menu digital elegante, reservas online e localização, feito para restaurantes e cafés.", "extras": ["Menu com preços", "Pedido de reservas", "Galeria de pratos", "Horários e mapa"]}, {"id": "lumen", "nome": "Lumen Portfólio", "categoria": "Portfólio", "tipo": "Portfólio Criativo", "preco": 95000, "prazo": "4 a 6 dias", "badge": "", "desc": "Portfólio minimalista e cheio de personalidade para designers, fotógrafos e freelancers.", "extras": ["Galeria de projetos", "Página sobre mim", "Animações suaves", "Contacto direto"]}, {"id": "vida", "nome": "Vida+ Saúde", "categoria": "Saúde", "tipo": "Clínica / Consultório", "preco": 220000, "prazo": "8 a 12 dias", "badge": "Novo", "desc": "Site acolhedor para clínicas e consultórios, com marcação de consultas e equipa médica.", "extras": ["Marcação de consultas", "Perfil dos médicos", "Especialidades", "Contacto de urgência"]}, {"id": "habitat", "nome": "Habitat Imobiliária", "categoria": "Imobiliário", "tipo": "Imobiliária", "preco": 240000, "prazo": "10 a 14 dias", "badge": "Novo", "desc": "Portal imobiliário com pesquisa por tipo e zona, filtros Venda/Arrendar e fichas de imóveis.", "extras": ["Pesquisa e filtros", "Fichas de imóveis", "Marcação de visitas", "Painel para anunciar"]}, {"id": "skillhub", "nome": "Skillhub Academia", "categoria": "Educação", "tipo": "Educação / Cursos", "preco": 260000, "prazo": "10 a 15 dias", "badge": "Novo", "desc": "Plataforma de cursos com categorias, progresso do aluno e inscrição em um clique.", "extras": ["Catálogo de cursos", "Progresso do aluno", "Inscrições", "Área de formadores"]}, {"id": "forma", "nome": "FORMA Ginásio", "categoria": "Fitness", "tipo": "Ginásio / Fitness", "preco": 130000, "prazo": "5 a 8 dias", "badge": "Novo", "desc": "Site de alta energia para ginásios, com horário de aulas por dia, reservas e planos.", "extras": ["Horário por dia", "Reserva de aulas", "Tabela de planos", "Botão de inscrição"]}];
 
 function fmtKz(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ' Kz'; }
 function urlWhats(texto) { return 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(texto); }
@@ -2723,15 +2671,19 @@ function renderModelos() {
                 </div>
             </div>
         </article>`).join('');
-    const IMG = { aurora: 'modelo-landing', meridian: 'modelo-institucional', mercato: 'modelo-loja' };
-    grid.querySelectorAll('.md-preview').forEach(p => {
-        const m = MODELOS.find(x => x.id === p.dataset.id);
-        const im = document.createElement('img');
-        im.src = '/static/img/' + (IMG[m.id] || 'modelo-landing') + '.jpg'; im.alt = 'Pré-visualização do modelo ' + m.nome;
-        im.loading = 'lazy'; im.decoding = 'async'; im.width = 640; im.height = 400;
-        p.insertBefore(im, p.firstChild);
-    });
+    const io = 'IntersectionObserver' in window
+        ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { carregarPreview(e.target); io.unobserve(e.target); } }), { rootMargin: '250px' })
+        : null;
+    grid.querySelectorAll('.md-preview').forEach(p => io ? io.observe(p) : carregarPreview(p));
     ajustarPreviews();
+}
+function carregarPreview(p) {
+    if (p.querySelector('iframe')) return;
+    const m = MODELOS.find(x => x.id === p.dataset.id); if (!m) return;
+    const f = document.createElement('iframe');
+    f.setAttribute('sandbox', 'allow-scripts'); f.setAttribute('tabindex', '-1'); f.setAttribute('aria-hidden', 'true');
+    f.title = 'Pré-visualização ' + m.nome; f.loading = 'lazy'; f.src = '/modelo/' + m.id;
+    p.insertBefore(f, p.firstChild); ajustarPreviews();
 }
 function ajustarPreviews() {
     document.querySelectorAll('.md-preview').forEach(p => {
@@ -2746,13 +2698,13 @@ function abrirDemo(id) {
     document.getElementById('dm-nome').textContent = m.nome + ' · ' + m.tipo;
     document.getElementById('dm-preco').textContent = fmtKz(m.preco);
     document.getElementById('dm-wa').href = urlWhats('Olá! Tenho interesse no modelo "' + m.nome + '" (' + fmtKz(m.preco) + ').');
-    document.getElementById('dm-iframe').srcdoc = m.html;
+    document.getElementById('dm-iframe').src = '/modelo/' + m.id;
     dmDispositivo('desk');
     abrirOverlay('dm-overlay');
 }
 function fecharDemo() {
     if (!document.getElementById('dm-overlay').classList.contains('open')) return;
-    fecharOverlay('dm-overlay'); document.getElementById('dm-iframe').srcdoc = '';
+    fecharOverlay('dm-overlay'); document.getElementById('dm-iframe').src = 'about:blank';
 }
 function dmDispositivo(d) {
     document.getElementById('dm-frame').classList.toggle('mob', d === 'mob');
@@ -2762,6 +2714,8 @@ function dmDispositivo(d) {
 function pedirModelo(id) {
     const m = MODELOS.find(x => x.id === id); if (!m) return;
     fecharDemo();
+    const assunto = document.getElementById('input-assunto');
+    if (assunto) assunto.value = 'Pedido do modelo ' + m.nome;
     const msg = document.getElementById('input-msg');
     if (msg) msg.value = 'Olá! Tenho interesse no modelo "' + m.nome + '" (' + m.tipo + ', ' + fmtKz(m.preco) + '). Quero personalizar com o meu logótipo, cores e textos. Sobre o meu negócio: ';
     document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
@@ -2769,28 +2723,32 @@ function pedirModelo(id) {
     dispararToastLateral('Modelo "' + m.nome + '" selecionado! Preenche os teus dados.');
 }
 
-// ═══════════ ASSISTENTE (resposta local quando não há backend de IA) ═══════════
+// ═══════════ ASSISTENTE (base de conhecimento local) ═══════════
 function respostaLocal(contexto, historico) {
-    if (contexto === 'form') {
-        return 'Obrigado! Recebemos a tua ideia e a nossa equipa entra em contacto em menos de 24 horas. Enquanto isso, espreita os **modelos de sites** mais acima — podemos partir de um deles para acelerar o teu projeto.';
-    }
     const ultima = (historico && historico.length ? historico[historico.length - 1].content : '') || '';
-    const t = ultima.toLowerCase();
-    if (/pre[çc]o|valor|custa|kz|kwanza|orçamento|orcamento|quanto/.test(t)) {
-        return 'Estes são os nossos **modelos de sites** (pagamento único, em Kwanzas):\n\n' +
-            MODELOS.map(m => '• **' + m.nome + '** (' + m.tipo + ') — ' + fmtKz(m.preco)).join('\n') +
-            '\n\nPara algo 100% à medida, pede um orçamento no formulário de contacto.';
-    }
-    if (/modelo|template|site|loja|restaurante|portf|cl[ií]nica|landing/.test(t)) {
-        return 'Temos ' + MODELOS.length + ' modelos prontos: ' + MODELOS.map(m => m.nome).join(', ') + '. Clica em **Ver demo** na secção “Modelos de Sites” para navegares em cada um e vê os preços em Kz.';
-    }
-    if (/prazo|dias|quanto tempo|entrega|demora/.test(t)) {
-        return 'Os prazos dependem do modelo: ' + MODELOS.map(m => m.nome + ' (' + m.prazo + ')').join(', ') + '.';
-    }
-    if (/contact|telefone|telem[oó]vel|whatsapp|e-?mail|falar|morada|onde/.test(t)) {
-        return 'Fala connosco por **envlomenttechnologies@gmail.com** ou **+244 952 393 828** (WhatsApp). Estamos em Luanda, Angola, e respondemos em menos de 24 horas.';
-    }
-    return 'Sou o assistente da **Envloument**! Posso falar-te dos nossos modelos de sites, preços em Kz, prazos e contactos. Para uma resposta personalizada, escreve-nos para envlomenttechnologies@gmail.com ou +244 952 393 828.';
+    const t = ultima.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const lista = MODELOS.map(m => '• **' + m.nome + '** (' + m.tipo + '): ' + fmtKz(m.preco) + ' · ' + m.prazo).join('\n');
+    const KB = [
+        [/^(ola|oi|bom dia|boa tarde|boa noite|hey)\b/, () => 'Olá! Sou o assistente da **Envloument**. Pergunta-me sobre preços, prazos, modelos, demonstração ou contactos.'],
+        [/obrigad|valeu|agradec/, () => 'De nada! Para uma proposta à medida, usa o formulário de contacto ou o WhatsApp +244 952 393 828.'],
+        [/preco|valor|custa|kz|kwanza|quanto custa|orcamento|pagamento|pagar/, () => 'Os nossos modelos (pagamento único, em Kwanzas):\n\n' + lista + '\n\nPara algo 100% à medida, pede orçamento no formulário de contacto ou por WhatsApp.'],
+        [/prazo|dias|demora|quanto tempo|rapidez|entrega do/, () => 'Prazos de referência:\n\n' + MODELOS.map(m => '• **' + m.nome + '**: ' + m.prazo).join('\n') + '\n\nO prazo final é confirmado na proposta, conforme o âmbito.'],
+        [/demonstra|demo|testar|experimentar|credenciais|login|palavra-passe|senha/, () => 'Clica em **Solicitar Demonstração**, preenche os teus dados e recebes **24 horas de acesso gratuito** à área exclusiva (as credenciais são descarregadas em .txt). Se perderes a palavra-passe, podes gerar outra na página de login.'],
+        [/stock|inventario|armazem|existencias/, () => 'Desenvolvemos **sistemas de gestão de stock**: produtos, entradas, saídas, inventário, alertas de stock mínimo e relatórios. Podes testar um simulador na área de demonstração.'],
+        [/loja|e-?commerce|vender online|carrinho|checkout|mercato/, () => 'Criamos **lojas online** com catálogo, carrinho, checkout e gestão de encomendas, com preços em Kz e pagamento na entrega. O modelo **Mercato** custa ' + fmtKz(MODELOS.find(m => m.id === 'mercato').preco) + '.'],
+        [/landing|pagina unica|campanha|aurora/, () => 'A **Landing Page** (modelo Aurora) é uma página única de alto impacto para produtos ou campanhas: ' + fmtKz(MODELOS.find(m => m.id === 'aurora').preco) + ', pronta em ' + MODELOS.find(m => m.id === 'aurora').prazo + '.'],
+        [/institucional|corporativ|advogad|consultor|meridian|empresa/, () => 'O **Site Institucional** (modelo Meridian) apresenta serviços, equipa e contactos com imagem profissional: ' + fmtKz(MODELOS.find(m => m.id === 'meridian').preco) + ', ' + MODELOS.find(m => m.id === 'meridian').prazo + '.'],
+        [/modelo|template|site|website|portfolio/, () => 'Temos ' + MODELOS.length + ' modelos prontos a personalizar:\n\n' + lista + '\n\nClica em **Ver demo** na secção “Modelos de Sites” para os explorares.'],
+        [/design|ux|ui|interface|layout/, () => 'Fazemos **UX/UI Design**: interfaces simples de usar, validadas contigo antes de qualquer linha de código.'],
+        [/suporte|manutencao|apoio|depois do lanc|ajuda tecnica/, () => 'Damos **apoio técnico direto da equipa** depois do lançamento. Escreve-nos por WhatsApp ou e-mail.'],
+        [/seguranca|protecao|hack|https|privacidade|dados/, () => 'Aplicamos boas práticas de segurança (validação de dados, palavras-passe cifradas, proteção contra abusos) e temos um CTO especialista em cibersegurança e pentesting. Vê a **Política de Privacidade** no rodapé.'],
+        [/equipa|quem sao|quem somos|fundador|ceo|programador/, () => 'A liderança da ENVLOUMENT é composta por **Wilson Matias** (CEO & Founder), **Cristiano Martins** (CTO), **Jeremias Konde** (Director of Development), **Patrícia Zau** (Finance & Operations) e **Jony Dias** (Full-Stack Developer). Vê a secção “Nossa Liderança”.'],
+        [/onde|localiza|morada|luanda|angola/, () => 'Estamos em **Luanda, Angola**, e trabalhamos com clientes em todo o país.'],
+        [/contact|telefone|telemovel|whatsapp|e-?mail|falar|humano|ligar/, () => 'Fala connosco por **WhatsApp +244 952 393 828** ou **envlomenttechnologies@gmail.com**. Respondemos em menos de 24 horas.'],
+        [/como funciona|processo|etapas|metodolog|fases/, () => 'Trabalhamos em 4 etapas: **Conversa inicial**, **Desenho visual** (aprovas o design), **Programação ágil** (acompanhas as entregas) e **Lançamento oficial**.']
+    ];
+    for (const [re, fn] of KB) if (re.test(t)) return fn();
+    return 'Não tenho a certeza de ter percebido. Posso ajudar com **preços, prazos, modelos, demonstração, stock** e **contactos** — ou fala com a equipa por WhatsApp (+244 952 393 828).';
 }
 
 // ═══════════ ARRANQUE ═══════════
@@ -2802,6 +2760,77 @@ renderFiltros(); renderModelos();
 document.getElementById('md-wa-custom').href = urlWhats('Olá! Gostaria de pedir um orçamento para um site à medida.');
 if (location.hash === '#demo') abrirDemoForm();
 
+</script>
+
+<script>
+(function () {
+    'use strict';
+    // ── Proteção básica do navegador (dissuasão; a segurança real está no servidor) ──
+    var bloq = function (e) { e.preventDefault(); e.stopPropagation(); };
+    addEventListener('keydown', function (e) {
+        var k = (e.key || '').toLowerCase();
+        if (e.key === 'F12' || e.key === 'F9' || (e.ctrlKey && e.shiftKey && 'ijck'.indexOf(k) > -1) ||
+            (e.ctrlKey && (k === 'u' || k === 's')) || (e.metaKey && e.altKey && 'ijcu'.indexOf(k) > -1)) bloq(e);
+    }, true);
+    addEventListener('contextmenu', function (e) { if (!e.target.closest('input,textarea')) e.preventDefault(); });
+    addEventListener('dragstart', function (e) { if (e.target.tagName === 'IMG') e.preventDefault(); });
+
+    // ── Redes sociais da liderança (preenche só os links que existirem) ──
+    var REDES = { wilson: {}, cristiano: {}, jeremias: {}, patricia: {}, jony: {} };   // ex.: { linkedin: 'https://linkedin.com/in/…', github: 'https://github.com/…' }
+    var ICO = { linkedin: ['fa-brands fa-linkedin-in', 'LinkedIn'], github: ['fa-brands fa-github', 'GitHub'] };
+    document.querySelectorAll('.lider-redes').forEach(function (box) {
+        var r = REDES[box.dataset.id] || {};
+        Object.keys(ICO).forEach(function (k) {
+            if (!/^https:\/\//.test(r[k] || '')) return;
+            var a = document.createElement('a'); a.href = r[k]; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.setAttribute('aria-label', ICO[k][1]);
+            a.innerHTML = '<i class="' + ICO[k][0] + '"></i>'; box.appendChild(a);
+        });
+    });
+
+    // ── Spotlight nos cartões da liderança ──
+    document.addEventListener('pointermove', function (e) {
+        var c = e.target.closest && e.target.closest('.lider-card'); if (!c) return;
+        var r = c.getBoundingClientRect(); c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }, { passive: true });
+
+    var reduzir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ── Contadores animados ──
+    var nums = document.querySelectorAll('.stat-number');
+    if ('IntersectionObserver' in window && !reduzir) {
+        var io = new IntersectionObserver(function (es) {
+            es.forEach(function (en) {
+                if (!en.isIntersecting) return; io.unobserve(en.target);
+                var el = en.target, m = el.textContent.trim().match(/^(\d+)(%?)$/); if (!m) return;
+                var fim = +m[1], t0 = performance.now();
+                (function passo(t) { var p = Math.min(1, (t - t0) / 1100); el.textContent = Math.round(fim * (1 - Math.pow(1 - p, 3))) + m[2]; if (p < 1) requestAnimationFrame(passo); })(t0);
+            });
+        }, { threshold: .6 });
+        nums.forEach(function (n) { io.observe(n); });
+    }
+
+    // ── Rede de partículas no hero (leve; pausa fora do ecrã) ──
+    var cv = document.getElementById('net'); if (!cv || reduzir) return;
+    var c = cv.getContext('2d'), w = 0, h = 0, pts = [], ativo = false, raf = 0, N = innerWidth < 768 ? 24 : 54, dpr = Math.min(devicePixelRatio || 1, 2);
+    function medir() { w = cv.offsetWidth; h = cv.offsetHeight; cv.width = w * dpr; cv.height = h * dpr; c.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    medir(); addEventListener('resize', medir);
+    for (var i = 0; i < N; i++) pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35 });
+    function quadro() {
+        if (!ativo) return;
+        c.clearRect(0, 0, w, h);
+        for (var i = 0; i < N; i++) {
+            var a = pts[i]; a.x += a.vx; a.y += a.vy;
+            if (a.x < 0 || a.x > w) a.vx *= -1; if (a.y < 0 || a.y > h) a.vy *= -1;
+            for (var j = i + 1; j < N; j++) {
+                var b = pts[j], dx = a.x - b.x, dy = a.y - b.y, d = dx * dx + dy * dy;
+                if (d < 16900) { c.strokeStyle = 'rgba(103,232,249,' + (0.5 * (1 - d / 16900)).toFixed(3) + ')'; c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke(); }
+            }
+            c.fillStyle = 'rgba(147,197,253,.85)'; c.beginPath(); c.arc(a.x, a.y, 1.6, 0, 6.283); c.fill();
+        }
+        raf = requestAnimationFrame(quadro);
+    }
+    new IntersectionObserver(function (es) { ativo = es[0].isIntersecting; cancelAnimationFrame(raf); if (ativo) quadro(); }).observe(cv);
+})();
 </script>
 </body>
 </html>

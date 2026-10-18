@@ -33,12 +33,32 @@
 - Corre com 1 worker + 8 threads (limites de tentativas consistentes e SQLite seguro).
 - Local: `FLASK_DEBUG=1 python app.py` → http://127.0.0.1:5000
 
-## Notificações (e-mail + WhatsApp)
-Cada demonstração, mensagem de contacto e pedido na área demo gera um aviso para `envlomenttechnologies@gmail.com`.
-1. Gmail → Conta Google → Segurança → Verificação em 2 passos → **Palavras-passe de aplicação** → cria uma.
-2. No Render define `SMTP_USER=envlomenttechnologies@gmail.com` e `SMTP_PASS=<palavra-passe de aplicação>`.
-3. (Opcional) WhatsApp automático para +244 952 393 828 via CallMeBot: envia "I allow callmebot to send me messages" para +34 644 51 95 23, recebes a chave e defines `CALLMEBOT_APIKEY`.
-Sem estas variáveis tudo continua a funcionar; os pedidos ficam em `/admin` (com ligação direta ao WhatsApp do cliente).
+## E-mails via Resend (formulário de contacto)
+O Railway **bloqueia SMTP (Gmail) nos planos Free/Trial/Hobby**; por isso o site usa a API HTTPS do **Resend**.
+Variáveis (Railway → Variables; modelo em `.env.example`):
+
+| Variável | Para quê |
+|---|---|
+| `RESEND_API_KEY` | chave da API (resend.com → API Keys) |
+| `CONTACT_EMAIL` | e-mail que recebe as mensagens |
+| `RESEND_FROM_EMAIL` | remetente; em testes `onboarding@resend.dev`, em produção um endereço de um domínio verificado |
+| `RESEND_FROM_NAME` | nome do remetente (opcional) |
+
+Nota: no modo de teste (`onboarding@resend.dev`) o Resend só entrega para o e-mail da conta Resend; para outros destinatários verifica um domínio.
+**Rota:** `POST /api/contact` (JSON: `nome`, `email`, `assunto`, `mensagem`; `/api/contato` continua a funcionar). Respostas: `201` ok · `400` JSON inválido · `422` campos inválidos (`fields`) · `429` demasiados pedidos (`Retry-After`) · `502/503/504` falha do e-mail (a mensagem fica guardada e visível em `/admin`).
+Estrutura: `services/email_service.py` (cliente Resend) · `utils/validators.py` (validação/sanitização) · `utils/email_templates.py` (e-mail HTML+texto). Testes: `python -m unittest discover -s tests -v`.
+Diagnóstico: `/admin` → **Estado do e-mail** → *Enviar e-mail de teste* (mostra as variáveis em falta ou o erro exato do Resend).
+(Opcional) WhatsApp automático via CallMeBot: `CALLMEBOT_APIKEY`. SMTP só em planos que o permitam: `SMTP_USER` + `SMTP_PASS`.
+
+## Defesa ativa
+O servidor regista e bloqueia (1 h) IPs que sondam caminhos (`/.env`, `/wp-admin`…), enviam injeção SQL/XSS, usam scanners (sqlmap, nikto…), preenchem honeypots ou forçam logins/admin, e **avisa por e-mail**. Vê e desbloqueia IPs em `/admin`. Para nunca te bloqueares a ti: `IP_CONFIANCA=o.teu.ip`.
+O F12/Ctrl+U bloqueado no navegador é só dissuasão (qualquer pessoa o contorna); a proteção real é do servidor — o que alguém altere no navegador nunca altera o site nem a base de dados. O código é servido minificado e sem comentários; **mantém o repositório GitHub privado**.
+
+## Assistente com IA (opcional)
+Funciona já com respostas locais e perguntas sugeridas. Para IA real: `ANTHROPIC_API_KEY` (e opcionalmente `ANTHROPIC_MODEL`) no Railway; o limite é 20 perguntas/10 min por IP e respostas até 350 tokens.
+
+## Fotos e redes da liderança
+Fotos: coloca JPGs quadrados em `static/img/equipa/` (`wilson.jpg`, `cristiano.jpg`, `jeremias.jpg`, `patricia.jpg`, `jony.jpg`). Redes: edita o objeto `REDES` no fim do `index.html` (links LinkedIn/GitHub; só aparecem os preenchidos).
 
 ## Credenciais da demo
 - Ao pedir a demonstração o ficheiro `envloument-credenciais.txt` é descarregado automaticamente (e há botão para repetir).
