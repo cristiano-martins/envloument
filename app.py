@@ -41,9 +41,9 @@ from flask import (Flask, Response, abort, g, jsonify, redirect, render_template
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from services.email_service import EmailError, email_service
-from utils.email_templates import render_contact_email
-from utils.validators import validate_contact
+from email_service import EmailError, email_service
+from email_templates import render_contact_email
+from contact_validation import validate_contact
 
 logging.basicConfig(level=(os.getenv('LOG_LEVEL') or 'INFO').upper(),
                     format='%(asctime)s %(levelname)s %(name)s: %(message)s')

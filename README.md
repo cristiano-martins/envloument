@@ -46,7 +46,7 @@ Variáveis (Railway → Variables; modelo em `.env.example`):
 
 Nota: no modo de teste (`onboarding@resend.dev`) o Resend só entrega para o e-mail da conta Resend; para outros destinatários verifica um domínio.
 **Rota:** `POST /api/contact` (JSON: `nome`, `email`, `assunto`, `mensagem`; `/api/contato` continua a funcionar). Respostas: `201` ok · `400` JSON inválido · `422` campos inválidos (`fields`) · `429` demasiados pedidos (`Retry-After`) · `502/503/504` falha do e-mail (a mensagem fica guardada e visível em `/admin`).
-Estrutura: `services/email_service.py` (cliente Resend) · `utils/validators.py` (validação/sanitização) · `utils/email_templates.py` (e-mail HTML+texto). Testes: `python -m unittest discover -s tests -v`.
+Ficheiros (todos ao lado do `app.py`): `email_service.py` (cliente Resend) · `contact_validation.py` (validação/sanitização) · `email_templates.py` (e-mail HTML+texto). Testes: `python -m unittest discover -s tests -v`.
 Diagnóstico: `/admin` → **Estado do e-mail** → *Enviar e-mail de teste* (mostra as variáveis em falta ou o erro exato do Resend).
 (Opcional) WhatsApp automático via CallMeBot: `CALLMEBOT_APIKEY`. SMTP só em planos que o permitam: `SMTP_USER` + `SMTP_PASS`.
 
