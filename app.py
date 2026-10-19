@@ -23,6 +23,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from email.message import EmailMessage
+import base64
 import csv
 import io
 import logging
@@ -41,6 +42,10 @@ from flask import (Flask, Response, abort, g, jsonify, redirect, render_template
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
 
+try:                                             # miniaturas dos modelos (gerar_miniaturas.py); a app arranca mesmo sem este ficheiro
+    from miniaturas import MINIATURAS
+except ImportError:
+    MINIATURAS = {}
 from email_service import EmailError, email_service
 from email_templates import render_contact_email
 from contact_validation import is_valid_email, sanitize_line, sanitize_text, validate_contact
@@ -161,6 +166,19 @@ RE_CARGA = re.compile(r"(union(\s|\+|/\*.*?\*/)+select|insert\s+into\s|drop\s+ta
 RE_SCANNER = re.compile(r'sqlmap|nikto|nmap|masscan|acunetix|nessus|wpscan|dirbuster|gobuster|hydra|havij|zgrab|nuclei|openvas|burpcollab', re.I)
 
 
+RE_MINIATURA = re.compile(r'/static/img/modelo-([a-z0-9_-]{2,30})\.jpg')
+_MINI_BYTES = {}
+
+
+def servir_miniatura(mid):
+    """Miniatura exata do modelo, vinda do código (não depende de static/ estar atualizado no deploy)."""
+    if mid not in _MINI_BYTES:
+        _MINI_BYTES[mid] = base64.b64decode(MINIATURAS[mid])
+    r = Response(_MINI_BYTES[mid], mimetype='image/jpeg')
+    r.headers['Cache-Control'] = 'public, max-age=86400'
+    return r
+
+
 def _hosts_validos():
     return {h for h in (request.host, request.headers.get('Host'), request.headers.get('X-Forwarded-Host')) if h}
 
@@ -229,7 +247,8 @@ def guarda():
             return _bloqueado()
         BLOQUEIOS.pop(ip, None)
     if request.path.startswith('/static/'):
-        return
+        mini = RE_MINIATURA.fullmatch(request.path)
+        return servir_miniatura(mini.group(1)) if mini and mini.group(1) in MINIATURAS else None
     if request.path != '/api/health':
         excedeu, fila_g = limite('global', 300, 60)
         if excedeu:
@@ -299,15 +318,15 @@ SERVICOS = ['Criação de Sites', 'Loja Online', 'Gestão de Stock', 'Outros']
 # Modelos mostrados no dashboard (preços em Kwanzas)
 MODELOS = [
     dict(id='aurora', nome='Landing Page', tipo='Página única', preco=85000, prazo='3 a 5 dias',
-         imagem='modelo-landing.jpg',
+         imagem='modelo-aurora.jpg',
          desc='Uma página única, moderna e de alto impacto para lançar um produto, serviço ou campanha e transformar visitantes em contactos.',
          extras=['Design 100% responsivo', 'Formulário de contacto', 'Botão de WhatsApp', 'Otimização SEO básica', 'Carregamento ultra-rápido']),
     dict(id='meridian', nome='Site Institucional', tipo='Multi-página', preco=180000, prazo='7 a 10 dias',
-         imagem='modelo-institucional.jpg',
+         imagem='modelo-meridian.jpg',
          desc='O cartão de visita digital da tua empresa: apresenta serviços, equipa e resultados com uma imagem profissional e de confiança.',
          extras=['Até 6 páginas', 'Secção de serviços e equipa', 'Formulário de propostas', 'Mapa de localização', 'Painel para editar textos']),
     dict(id='mercato', nome='Loja Online', tipo='E-commerce', preco=350000, prazo='12 a 15 dias',
-         imagem='modelo-loja.jpg',
+         imagem='modelo-mercato.jpg',
          desc='Vende 24 horas por dia: catálogo de produtos, carrinho, checkout e gestão de encomendas, com preços em Kwanzas e pagamento na entrega.',
          extras=['Catálogo até 100 produtos', 'Carrinho e checkout', 'Painel de encomendas', 'Pesquisa e filtros', 'Integração com stock']),
 ]
@@ -512,7 +531,9 @@ def _index_servido():
 def health():
     try:
         db().execute('SELECT 1').fetchone()
-        return jsonify(ok=True, modelos=sum(1 for m in modelos_embutidos().values() if m.get('html')))
+        novo = lambda f, marca: os.path.isfile(os.path.join(BASE_DIR, 'templates', f)) and marca in open(os.path.join(BASE_DIR, 'templates', f), encoding='utf-8').read()
+        return jsonify(ok=True, modelos=sum(1 for m in modelos_embutidos().values() if m.get('html')),
+                       dashboard_novo=novo('dashboard.html', 'Demo Console'), miniaturas=len(MINIATURAS))
     except Exception:
         return jsonify(ok=False), 503
 
@@ -655,7 +676,8 @@ def modelos_embutidos():
 
 def catalogo_modelos():
     """Lista de modelos (sem o HTML) para o dashboard: os embutidos ou, em último caso, os 3 base."""
-    emb = [{k: v for k, v in m.items() if k != 'html'} for m in modelos_embutidos().values() if m.get('html')]
+    emb = [{**{k: v for k, v in m.items() if k != 'html'}, 'imagem': 'modelo-%s.jpg' % m['id']}
+           for m in modelos_embutidos().values() if m.get('html')]
     return emb or MODELOS
 
 

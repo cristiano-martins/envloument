@@ -66,3 +66,9 @@ Fotos: coloca JPGs quadrados em `static/img/equipa/` (`wilson.jpg`, `cristiano.j
 
 ## Modelos de sites
 Cada modelo é um ficheiro em `modelos/<id>.html` e está **embutido no `index.html`** (por isso o site não precisa de mais ficheiros no deploy). Depois de editar um modelo: `python embed_modelos.py`.
+
+## Miniaturas dos modelos
+As imagens dos cartões (`static/img/modelo-<id>.jpg`) são geradas a partir dos próprios modelos com `python gerar_miniaturas.py` (cria também `miniaturas.py`, que a app serve diretamente, por isso nunca ficam desatualizadas nem em falta). Depois de editar um modelo: `python gerar_miniaturas.py` e `python embed_modelos.py`.
+
+## Verificar o deploy
+Abre `/api/health`: deve mostrar `"modelos": 9`, `"miniaturas": 9` e `"dashboard_novo": true`. Se `dashboard_novo` for `false`, o `templates/dashboard.html` novo não foi enviado para o repositório.
