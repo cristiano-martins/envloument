@@ -1,5 +1,10 @@
 envloument.db
+*.db
+*.db-wal
+*.db-shm
 .session_key
 __pycache__/
 *.pyc
 .env
+.env.*
+!.env.example

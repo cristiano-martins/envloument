@@ -63,3 +63,6 @@ Fotos: coloca JPGs quadrados em `static/img/equipa/` (`wilson.jpg`, `cristiano.j
 ## Credenciais da demo
 - Ao pedir a demonstração o ficheiro `envloument-credenciais.txt` é descarregado automaticamente (e há botão para repetir).
 - Esqueceu-se da palavra-passe? `/demo/recuperar` (utilizador + e-mail + telefone do pedido) gera uma nova. As palavras-passe só existem como hash, por isso não podem ser "reveladas".
+
+## Modelos de sites
+Cada modelo é um ficheiro em `modelos/<id>.html` e está **embutido no `index.html`** (por isso o site não precisa de mais ficheiros no deploy). Depois de editar um modelo: `python embed_modelos.py`.

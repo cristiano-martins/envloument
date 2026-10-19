@@ -37,13 +37,13 @@ from functools import wraps
 from time import time
 
 from flask import (Flask, Response, abort, g, jsonify, redirect, render_template,
-                   request, send_from_directory, session, url_for)
+                   request, session, url_for)
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from email_service import EmailError, email_service
 from email_templates import render_contact_email
-from contact_validation import validate_contact
+from contact_validation import is_valid_email, sanitize_line, sanitize_text, validate_contact
 
 logging.basicConfig(level=(os.getenv('LOG_LEVEL') or 'INFO').upper(),
                     format='%(asctime)s %(levelname)s %(name)s: %(message)s')
@@ -54,6 +54,7 @@ DB_PATH = os.getenv('DATABASE_PATH') or os.path.join(_VOLUME or BASE_DIR, 'envlo
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 DEMO_HORAS = int(os.getenv('DEMO_HORAS', '24'))
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', '')
+ADMIN_IPS = {x.strip() for x in os.getenv('ADMIN_IPS', '').split(',') if x.strip()}   # opcional: restringe /admin a estes IPs
 
 CONTACT_EMAIL = (os.getenv('CONTACT_EMAIL') or '').strip()   # destinatário (também usado pelo SMTP opcional)
 WHATSAPP_NUM = os.getenv('WHATSAPP_NUM', '244952393828')
@@ -90,10 +91,21 @@ def _chave_sessao():
 
 
 app.secret_key = _chave_sessao()
-EM_PRODUCAO = os.getenv('FLASK_DEBUG') != '1'
-app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax',
-                  SESSION_COOKIE_SECURE=EM_PRODUCAO and os.getenv('INSECURE_COOKIES') != '1',
+NA_RAILWAY = bool(os.getenv('RAILWAY_ENVIRONMENT'))
+EM_PRODUCAO = NA_RAILWAY or os.getenv('FLASK_DEBUG') != '1'            # no Railway é sempre produção
+COOKIE_SEGURO = EM_PRODUCAO and (NA_RAILWAY or os.getenv('INSECURE_COOKIES') != '1')
+SESSAO_MAX_S = 12 * 3600                                               # limite absoluto de uma sessão
+app.config.update(SESSION_COOKIE_NAME='__Host-envl' if COOKIE_SEGURO else 'envl_session',
+                  SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax', SESSION_COOKIE_SECURE=COOKIE_SEGURO,
+                  SESSION_COOKIE_PATH='/', PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
                   MAX_CONTENT_LENGTH=64 * 1024, SEND_FILE_MAX_AGE_DEFAULT=86400)
+if EM_PRODUCAO:
+    if not os.getenv('SESSION_SECRET'):
+        app.logger.warning('SESSION_SECRET não definida: define uma chave fixa de 32+ caracteres no Railway.')
+    elif len(os.getenv('SESSION_SECRET')) < 32:
+        app.logger.warning('SESSION_SECRET demasiado curta (usa 32+ caracteres).')
+    if ADMIN_PASSWORD and len(ADMIN_PASSWORD) < 12:
+        app.logger.warning('ADMIN_PASSWORD fraca (usa 12+ caracteres).')
 if os.getenv('TRUST_PROXY') == '1' or os.getenv('RAILWAY_ENVIRONMENT'):          # atrás do proxy do Render/nginx: confia em 1 salto
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
@@ -149,6 +161,25 @@ RE_CARGA = re.compile(r"(union(\s|\+|/\*.*?\*/)+select|insert\s+into\s|drop\s+ta
 RE_SCANNER = re.compile(r'sqlmap|nikto|nmap|masscan|acunetix|nessus|wpscan|dirbuster|gobuster|hydra|havij|zgrab|nuclei|openvas|burpcollab', re.I)
 
 
+def _hosts_validos():
+    return {h for h in (request.host, request.headers.get('Host'), request.headers.get('X-Forwarded-Host')) if h}
+
+
+def origem_confiavel():
+    """True se o pedido nasceu no próprio site (Sec-Fetch-Site, ou Origin/Referer). Defesa contra CSRF em ações por GET."""
+    sfs = request.headers.get('Sec-Fetch-Site')
+    if sfs:
+        return sfs in ('same-origin', 'none')
+    ref = request.headers.get('Origin') or request.headers.get('Referer')
+    return bool(ref) and urllib.parse.urlsplit(ref).netloc in _hosts_validos()
+
+
+def json_dict():
+    """Corpo JSON como dict; qualquer outra coisa (lista, texto, vazio) vira {}."""
+    d = request.get_json(silent=True)
+    return d if isinstance(d, dict) else {}
+
+
 def registar_incidente(tipo, detalhe='', peso=2):
     """Regista tentativa suspeita. Ao atingir o limite, bloqueia o IP e avisa por e-mail."""
     ip = request.remote_addr or '?'
@@ -190,6 +221,8 @@ def _valores_pedido():
 @app.before_request
 def guarda():
     ip = request.remote_addr or '?'
+    if (EM_PRODUCAO and request.headers.get('X-Forwarded-Proto', '').lower() == 'http' and request.path != '/api/health'):
+        return redirect(request.url.replace('http://', 'https://', 1), 308)      # HTTPS obrigatório (health check exceptuado)
     ate = BLOQUEIOS.get(ip)
     if ate:
         if time() < ate:
@@ -197,6 +230,18 @@ def guarda():
         BLOQUEIOS.pop(ip, None)
     if request.path.startswith('/static/'):
         return
+    if request.path != '/api/health':
+        excedeu, fila_g = limite('global', 300, 60)
+        if excedeu:
+            registar_incidente('flood', 'mais de 300 pedidos/min', 1)
+            r = Response('Demasiados pedidos.', 429, mimetype='text/plain'); r.headers['Retry-After'] = '30'
+            return r
+        fila_g.append(time())
+    if request.method in ('POST', 'PUT', 'PATCH', 'DELETE') and os.getenv('ORIGIN_CHECK', '1') != '0':
+        origem = request.headers.get('Origin')
+        if origem and (origem == 'null' or urllib.parse.urlsplit(origem).netloc not in _hosts_validos()):
+            registar_incidente('csrf', 'Origin: ' + origem[:100], 3)
+            return Response('Pedido recusado.', 403, mimetype='text/plain')
     if RE_SCANNER.search(request.headers.get('User-Agent', '')):
         registar_incidente('scanner', request.headers.get('User-Agent', ''), LIMITE_BLOQUEIO)
         return _bloqueado()
@@ -223,7 +268,7 @@ def comprimir(resp):
         return resp
     resp.set_data(gzip.compress(dados, 6))
     resp.headers['Content-Encoding'] = 'gzip'
-    resp.headers['Vary'] = 'Accept-Encoding'
+    resp.vary.add('Accept-Encoding')
     return resp
 
 
@@ -232,16 +277,21 @@ def cabecalhos_seguranca(resp):
     resp.headers.setdefault('X-Content-Type-Options', 'nosniff')
     resp.headers.setdefault('X-Frame-Options', 'SAMEORIGIN')
     resp.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
-    resp.headers.setdefault('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+    resp.headers.setdefault('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()')
+    resp.headers.setdefault('Cross-Origin-Opener-Policy', 'same-origin')
+    resp.headers.setdefault('Cross-Origin-Resource-Policy', 'same-origin')
+    resp.headers.setdefault('X-Permitted-Cross-Domain-Policies', 'none')
     resp.headers.setdefault('Content-Security-Policy',
         "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
         "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self'; frame-src 'self'; "
-        "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'")
+        "object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" + ('; upgrade-insecure-requests' if request.is_secure else ''))
     if request.is_secure:
         resp.headers.setdefault('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
     resp.headers['Server'] = 'Envloument'
-    if request.path.startswith(('/demo', '/admin', '/api/demo')):
-        resp.headers['Cache-Control'] = 'no-store'
+    if request.path.startswith(('/demo', '/admin', '/api/')):
+        resp.headers['Cache-Control'] = 'no-store, max-age=0'
+        resp.headers['Pragma'] = 'no-cache'
+        resp.vary.add('Cookie')
     return resp
 
 SERVICOS = ['Criação de Sites', 'Loja Online', 'Gestão de Stock', 'Outros']
@@ -334,7 +384,7 @@ def parse_iso(s):
 
 
 def email_valido(e):
-    return bool(re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+', e or ''))
+    return isinstance(e, str) and is_valid_email(e)
 
 
 def telefone_valido(t):
@@ -403,7 +453,7 @@ def conta_atual():
     if not did:
         return None
     row = db().execute('SELECT * FROM demo_accounts WHERE id=?', (did,)).fetchone()
-    if row is None or parse_iso(row['expira_em']) <= agora():
+    if row is None or parse_iso(row['expira_em']) <= agora() or time() - session.get('t0', 0) > SESSAO_MAX_S:
         session.clear()
         return None
     return row
@@ -462,7 +512,7 @@ def _index_servido():
 def health():
     try:
         db().execute('SELECT 1').fetchone()
-        return jsonify(ok=True)
+        return jsonify(ok=True, modelos=sum(1 for m in modelos_embutidos().values() if m.get('html')))
     except Exception:
         return jsonify(ok=False), 503
 
@@ -503,7 +553,7 @@ def erro_http(e):
 
 @app.post('/api/demo/solicitar')
 def solicitar_demo():
-    d = request.get_json(silent=True) or {}
+    d = json_dict()
     if d.get('website'):                       # honeypot anti-bots
         registar_incidente('honeypot', 'campo oculto preenchido', 6)
         return jsonify(error='Pedido inválido.'), 400
@@ -511,11 +561,9 @@ def solicitar_demo():
     if bloqueado:
         return jsonify(error='Demasiados pedidos deste dispositivo. Tenta novamente daqui a pouco.'), 429
 
-    nome = (d.get('nome') or '').strip()
-    email = (d.get('email') or '').strip().lower()
-    telefone = (d.get('telefone') or '').strip()
-    empresa = (d.get('empresa') or '').strip()[:100]
-    servico = (d.get('servico') or '').strip()
+    campo = lambda k: sanitize_line(d.get(k)) if isinstance(d.get(k), str) else ''
+    nome, email, telefone = campo('nome'), campo('email').lower(), campo('telefone')
+    empresa, servico = campo('empresa')[:100], campo('servico')
 
     if len(nome) < 3 or len(nome) > 100: return jsonify(error='Indica o teu nome completo.'), 400
     if not email_valido(email) or len(email) > 160: return jsonify(error='Indica um e-mail válido.'), 400
@@ -581,21 +629,62 @@ def contato():
     return jsonify(ok=True, message='Mensagem enviada com sucesso. Respondemos em menos de 24 horas.'), 201
 
 
-_GUARDA_MODELO = ('<script>document.addEventListener("click",function(e){var a=e.target.closest("a");if(a){e.preventDefault()}},true);'
-                  'document.addEventListener("submit",function(e){e.preventDefault()},true)</script>')
+_GUARDA_MODELO = ("<script>(function(){var t;function T(){var d=document.getElementById('__t');if(!d){d=document.createElement('div');d.id='__t';"
+                  "d.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(15,23,42,.92);color:#fff;font:600 12px system-ui,sans-serif;padding:9px 16px;border-radius:99px;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap';"
+                  "d.textContent='Pré-visualização: disponível no site final';document.body.appendChild(d)}d.style.opacity=1;clearTimeout(t);t=setTimeout(function(){d.style.opacity=0},1800)}"
+                  "document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;e.preventDefault();var h=a.getAttribute('href')||'';"
+                  "if(h.length>1&&h.charAt(0)==='#'){var el=document.getElementById(h.slice(1));if(el){el.scrollIntoView({behavior:'smooth'});return}}T()},true);"
+                  "document.addEventListener('submit',function(e){e.preventDefault();T()},true)})();</script>")
+
+_EMB = {'mtime': 0, 'data': {}}
+
+
+def modelos_embutidos():
+    """Modelos incluídos no index.html (fonte única; o site nunca depende da pasta modelos/)."""
+    caminho = os.path.join(BASE_DIR, 'index.html')
+    try:
+        mt = os.path.getmtime(caminho)
+        if _EMB['mtime'] != mt:
+            with open(caminho, encoding='utf-8') as f:
+                m = re.search(r'const MODELOS = (\[.*?\]);\n', f.read(), re.S)
+            _EMB.update(mtime=mt, data={x['id']: x for x in json.loads(m.group(1))} if m else {})
+    except (OSError, ValueError, KeyError, TypeError):
+        app.logger.exception('Falha ao ler os modelos embutidos')
+    return _EMB['data']
+
+
+def catalogo_modelos():
+    """Lista de modelos (sem o HTML) para o dashboard: os embutidos ou, em último caso, os 3 base."""
+    emb = [{k: v for k, v in m.items() if k != 'html'} for m in modelos_embutidos().values() if m.get('html')]
+    return emb or MODELOS
+
+
+def html_modelo(mid):
+    if not re.fullmatch(r'[a-z0-9_-]{2,30}', mid or ''):
+        return None
+    emb = modelos_embutidos().get(mid)
+    if emb and emb.get('html'):
+        return emb['html']
+    caminho = os.path.join(BASE_DIR, 'modelos', mid + '.html')
+    if os.path.isfile(caminho):
+        with open(caminho, encoding='utf-8') as f:
+            return f.read()
+    return None
+
+
+def resposta_modelo(mid, cache):
+    html = html_modelo(mid)
+    if html is None:
+        abort(404)
+    r = Response(html.replace('</body>', _GUARDA_MODELO + '</body>', 1), mimetype='text/html')
+    r.headers['Cache-Control'] = cache
+    return r
 
 
 @app.get('/modelo/<mid>')
 def modelo_publico(mid):
     """Modelos públicos para pré-visualização. Links e formulários ficam inertes (nunca saem do modelo)."""
-    caminho = os.path.join(BASE_DIR, 'modelos', mid + '.html')
-    if not re.fullmatch(r'[a-z0-9_-]{2,30}', mid) or not os.path.isfile(caminho):
-        abort(404)
-    with open(caminho, encoding='utf-8') as f:
-        html = f.read().replace('</body>', _GUARDA_MODELO + '</body>', 1)
-    r = Response(html, mimetype='text/html')
-    r.headers['Cache-Control'] = 'public, max-age=3600'
-    return r
+    return resposta_modelo(mid, 'public, max-age=3600')
 
 
 def _prompt_assistente():
@@ -614,7 +703,7 @@ def _prompt_assistente():
 @app.post('/api/assistente')
 def assistente():
     """Assistente com IA (opcional). Sem ANTHROPIC_API_KEY devolve 503 e o site usa as respostas locais."""
-    d = request.get_json(silent=True) or {}
+    d = json_dict()
     limpo = []
     for m in (d.get('messages') or [])[-8:]:
         if isinstance(m, dict) and m.get('role') in ('user', 'assistant') and isinstance(m.get('content'), str):
@@ -679,7 +768,8 @@ def demo_login():
     if parse_iso(row['expira_em']) <= agora():
         return render_template('demo_login.html', aviso='', usuario='',
                                erro='Este acesso expirou. Solicita uma nova demonstração.'), 403
-    session.clear(); session['demo_id'] = row['id']
+    session.clear(); session.permanent = True
+    session['demo_id'] = row['id']; session['t0'] = int(time())
     db().execute('UPDATE demo_accounts SET ultimo_login=? WHERE id=?', (iso(agora()), row['id']))
     db().commit()
     return redirect(url_for('dashboard'))
@@ -727,22 +817,20 @@ def demo_logout():
 @demo_required
 def dashboard():
     c = g.conta
-    return render_template('dashboard.html', conta=c, modelos=MODELOS, servicos=SERVICOS,
+    return render_template('dashboard.html', conta=c, modelos=catalogo_modelos(), servicos=SERVICOS, demo_horas=DEMO_HORAS,
                            expira_em=c['expira_em'], primeiro_nome=c['nome'].split()[0])
 
 
 @app.get('/demo/modelo/<mid>')
 @demo_required
 def modelo_ao_vivo(mid):
-    if mid not in MODELOS_POR_ID:
-        abort(404)
-    return send_from_directory(os.path.join(BASE_DIR, 'modelos'), mid + '.html')
+    return resposta_modelo(mid, 'no-store, max-age=0')
 
 
 @app.post('/api/demo/pedido')
 @demo_required
 def novo_pedido():
-    d = request.get_json(silent=True) or {}
+    d = json_dict()
     tipo = d.get('tipo')
     if tipo not in ('modelo', 'projeto', 'stock', 'contacto'):
         return jsonify(error='Pedido inválido.'), 400
@@ -750,15 +838,14 @@ def novo_pedido():
     if bloqueado:
         return jsonify(error='Muitos pedidos seguidos. Tenta mais tarde.'), 429
 
-    assunto, mensagem = '', (d.get('mensagem') or '').strip()[:1500]
+    txt = lambda k, n: sanitize_line(d.get(k))[:n] if isinstance(d.get(k), str) else ''
+    assunto, mensagem = '', (sanitize_text(d.get('mensagem'))[:1500] if isinstance(d.get('mensagem'), str) else '')
     if tipo == 'modelo':
-        m = MODELOS_POR_ID.get(d.get('modelo'))
+        m = next((x for x in catalogo_modelos() if x['id'] == d.get('modelo')), None)
         if not m: return jsonify(error='Modelo inválido.'), 400
         assunto = '%s (%s)' % (m['nome'], fmt_kz(m['preco']))
     elif tipo == 'projeto':
-        tp = (d.get('tipo_projeto') or '').strip()[:60]
-        orc = (d.get('orcamento') or '').strip()[:40]
-        prazo = (d.get('prazo') or '').strip()[:40]
+        tp, orc, prazo = txt('tipo_projeto', 60), txt('orcamento', 40), txt('prazo', 40)
         if not tp or len(mensagem) < 10:
             return jsonify(error='Escolhe o tipo de projeto e descreve a tua ideia (mín. 10 caracteres).'), 400
         assunto = tp
@@ -766,7 +853,7 @@ def novo_pedido():
     elif tipo == 'stock':
         assunto = 'Sistema de Gestão de Stock'
     else:
-        assunto = (d.get('assunto') or 'Contacto').strip()[:80]
+        assunto = txt('assunto', 80) or 'Contacto'
         if len(mensagem) < 5:
             return jsonify(error='Escreve a tua mensagem.'), 400
 
@@ -784,7 +871,7 @@ def novo_pedido():
 def admin_required(f):
     @wraps(f)
     def wrapper(*a, **kw):
-        if not ADMIN_PASSWORD:
+        if not ADMIN_PASSWORD or (ADMIN_IPS and (request.remote_addr or '') not in ADMIN_IPS):
             abort(404)
         au = request.authorization
         if not au or au.username != 'admin' or not hmac.compare_digest(au.password or '', ADMIN_PASSWORD):
@@ -813,6 +900,9 @@ def admin():
 @app.get('/admin/teste-email')
 @admin_required
 def admin_teste_email():
+    if not origem_confiavel():
+        registar_incidente('csrf', 'admin/teste-email de origem externa', 3)
+        abort(403)
     ok, msg = enviar_email('Teste de e-mail', 'Se estás a ler isto, o envio de e-mails da Envloument está a funcionar.')
     EMAIL_STATUS.update(ultimo='%s UTC — %s' % (iso(agora())[:16].replace('T', ' '), msg), ok=ok)
     return redirect(url_for('admin', m=('OK: ' if ok else 'FALHOU: ') + msg[:300]))
@@ -821,6 +911,9 @@ def admin_teste_email():
 @app.get('/admin/desbloquear')
 @admin_required
 def admin_desbloquear():
+    if not origem_confiavel():
+        registar_incidente('csrf', 'admin/desbloquear de origem externa', 3)
+        abort(403)
     ip = request.args.get('ip', '')
     BLOQUEIOS.pop(ip, None); _STRIKES.pop(ip, None)
     return redirect(url_for('admin'))
@@ -844,5 +937,5 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=int(os.getenv("PORT", 5000)),
-        debug=os.getenv("FLASK_DEBUG") == "1"
+        debug=os.getenv("FLASK_DEBUG") == "1" and not NA_RAILWAY
     )
