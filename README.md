@@ -72,3 +72,11 @@ As imagens dos cartões (`static/img/modelo-<id>.jpg`) são geradas a partir dos
 
 ## Verificar o deploy
 Abre `/api/health`: deve mostrar `"modelos": 9`, `"miniaturas": 9` e `"dashboard_novo": true`. Se `dashboard_novo` for `false`, o `templates/dashboard.html` novo não foi enviado para o repositório.
+
+## Não perder as contas demo (nem mensagens) ao atualizar o site
+No Railway, o disco do serviço é **temporário**: cada deploy cria um contentor novo e apaga o que lá estava. Para os dados sobreviverem:
+1. No projeto Railway, abre o serviço → **Settings → Volumes → Add Volume** → *Mount path:* `/data`.
+2. Faz redeploy. A app deteta o volume sozinha (`RAILWAY_VOLUME_MOUNT_PATH`) e guarda lá a base de dados (`/data/envloument.db`) e a chave de sessão.
+3. Confirma em `/api/health`: `"persistente": true`. Se for `false`, ainda estás sem volume (o log mostra "SEM VOLUME").
+Backups: a app cria **1 backup por dia** em `/data/backups` (guarda os últimos 7) e podes descarregar uma cópia em `/admin` → *Base de dados → Descarregar backup*. Guarda estas cópias fora do Railway (contêm dados pessoais).
+Nota: um Volume só liga a uma instância e pode haver uns segundos de indisponibilidade durante o deploy. Define também `SESSION_SECRET` (para as sessões não se perderem).

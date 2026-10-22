@@ -14,10 +14,12 @@ Variáveis de ambiente (opcionais):
     RESEND_API_KEY, CONTACT_EMAIL, RESEND_FROM_EMAIL, RESEND_FROM_NAME   e-mails via Resend (ver .env.example)
     PORT / FLASK_DEBUG
 """
+import glob
 import gzip
 import hmac
 import json
 import smtplib
+import tempfile
 import threading
 import urllib.error
 import urllib.parse
@@ -35,7 +37,7 @@ import unicodedata
 from collections import defaultdict, deque
 from datetime import datetime, timedelta, timezone
 from functools import wraps
-from time import time
+from time import sleep, time
 
 from flask import (Flask, Response, abort, g, jsonify, redirect, render_template,
                    request, session, url_for)
@@ -111,6 +113,13 @@ if EM_PRODUCAO:
         app.logger.warning('SESSION_SECRET demasiado curta (usa 32+ caracteres).')
     if ADMIN_PASSWORD and len(ADMIN_PASSWORD) < 12:
         app.logger.warning('ADMIN_PASSWORD fraca (usa 12+ caracteres).')
+# A base de dados só sobrevive a um deploy se estiver num Volume (fora do Railway, o disco normal serve)
+PERSISTENTE = (not NA_RAILWAY) or bool(_VOLUME and DB_PATH.startswith(_VOLUME)) or os.path.ismount(os.path.dirname(DB_PATH))
+if not PERSISTENTE:
+    app.logger.warning('SEM VOLUME: a base de dados está num disco temporário e PERDE-SE a cada deploy. '
+                       'Cria um Volume no Railway (mount path /data).')
+else:
+    app.logger.info('Base de dados persistente em %s', DB_PATH)
 if os.getenv('TRUST_PROXY') == '1' or os.getenv('RAILWAY_ENVIRONMENT'):          # atrás do proxy do Render/nginx: confia em 1 salto
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
@@ -533,7 +542,8 @@ def health():
         db().execute('SELECT 1').fetchone()
         novo = lambda f, marca: os.path.isfile(os.path.join(BASE_DIR, 'templates', f)) and marca in open(os.path.join(BASE_DIR, 'templates', f), encoding='utf-8').read()
         return jsonify(ok=True, modelos=sum(1 for m in modelos_embutidos().values() if m.get('html')),
-                       dashboard_novo=novo('dashboard.html', 'Demo Console'), miniaturas=len(MINIATURAS))
+                       dashboard_novo=novo('dashboard.html', 'Demo Console'), miniaturas=len(MINIATURAS),
+                       persistente=PERSISTENTE)
     except Exception:
         return jsonify(ok=False), 503
 
@@ -916,7 +926,8 @@ def admin():
     return render_template('admin.html', contas=contas, pedidos=pedidos, leads=leads, agora=iso(agora()),
                            incidentes=incidentes, bloqueados=bloqueados, email_status=EMAIL_STATUS,
                            email_cfg=email_service.configured or bool(SMTP_USER and SMTP_PASS and CONTACT_EMAIL),
-                           email_problemas=email_service.problems(), teste=request.args.get('m', ''))
+                           email_problemas=email_service.problems(), teste=request.args.get('m', ''),
+                           persistente=PERSISTENTE, n_backups=len(listar_backups()))
 
 
 @app.get('/admin/teste-email')
@@ -953,7 +964,55 @@ def admin_csv():
                     headers={'Content-Disposition': 'attachment; filename=demonstracoes.csv'})
 
 
+
+# ───────────── backups da base de dados ─────────────
+BACKUP_DIR = os.path.join(os.path.dirname(DB_PATH), 'backups')
+
+
+def fazer_backup(destino=None):
+    """Cópia consistente da base de dados (API de backup do SQLite, segura mesmo com a app a escrever)."""
+    destino = destino or os.path.join(BACKUP_DIR, 'envloument-%s.db' % agora().strftime('%Y%m%d-%H%M'))
+    os.makedirs(os.path.dirname(destino), exist_ok=True)
+    origem, copia = sqlite3.connect(DB_PATH), sqlite3.connect(destino)
+    try:
+        origem.backup(copia)
+    finally:
+        copia.close(); origem.close()
+    return destino
+
+
+def listar_backups():
+    return sorted(glob.glob(os.path.join(BACKUP_DIR, 'envloument-*.db')))
+
+
+def _ciclo_backups(manter=7):
+    """Um backup por dia dentro do Volume; guarda os últimos 7."""
+    while True:
+        try:
+            ficheiros = listar_backups()
+            if not ficheiros or time() - os.path.getmtime(ficheiros[-1]) > 20 * 3600:
+                app.logger.info('Backup diário criado: %s', fazer_backup())
+                for velho in listar_backups()[:-manter]:
+                    os.remove(velho)
+        except Exception:
+            app.logger.exception('Falha no backup automático')
+        sleep(3600)
+
+
+@app.get('/admin/copia-seguranca.db')
+@admin_required
+def admin_backup():
+    """Descarrega uma cópia completa da base de dados (contém dados pessoais: guarda-a em local seguro)."""
+    with tempfile.TemporaryDirectory() as pasta:
+        with open(fazer_backup(os.path.join(pasta, 'backup.db')), 'rb') as f:
+            dados = f.read()
+    return Response(dados, mimetype='application/octet-stream',
+                    headers={'Content-Disposition': 'attachment; filename=envloument-backup-%s.db' % agora().strftime('%Y%m%d')})
+
+
 init_db()
+if EM_PRODUCAO and PERSISTENTE and os.getenv('BACKUPS', '1') != '0':
+    threading.Thread(target=_ciclo_backups, daemon=True).start()
 
 if __name__ == "__main__":
     app.run(
